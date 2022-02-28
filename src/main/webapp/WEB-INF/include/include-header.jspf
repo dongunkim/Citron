@@ -1,0 +1,36 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<% String locale = (String)session.getAttribute("locale"); %>
+
+<!-- StyleSheet -->
+<link rel="stylesheet" type="text/css" href="/lib/bootstrap-3.4.1/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/lib/jquery-ui-1.12.0/jquery-ui.min.css"/>
+<link rel="stylesheet" type="text/css" href="/css/citron.css" />
+ 
+<!-- jQuery -->
+<script type="text/javascript" src="/lib/jquery-3.4.1/jquery-3.4.1.min.js"></script>
+<script type="text/javascript" src="/lib/jquery-ui-1.12.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/lib/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+
+<!-- jQuery Validation -->
+<script type="text/javascript" src="/lib/jquery-validation-1.19.1/jquery.validate.js"></script>
+ <c:if test="${locale == 'ko'}">
+<script type="text/javascript" src="/lib/jquery-validation-1.19.1/i18n/messages_ko.js"></script>
+</c:if>
+<script type="text/javascript" src="/lib/jquery-validation-1.19.1/additional-methods.js"></script>
+ 
+<!-- jQuery Form SerializeObject Plugin -->
+<script type="text/javascript" src="/lib/jquery-serializeObject-2.0.3/jquery.serializeObject.min.js"></script>
+ 
+<!-- jQuery Cookie Plugin -->
+<script type="text/javascript" src="/lib/jquery-cookie-1.4.1/jquery.cookie.js"></script>
+ 
+<!-- jQuery i18n Properties Plugin -->
+<script type="text/javascript" src="/lib/jquery-i18n-properties-1.2.7/jquery.i18n.properties.min.js"></script>
+ 
+<!-- Common Script -->
+<script type="text/javascript" src="/js/common.js"></script>
+<script type="text/javascript" src="/js/common.util.js"></script>
+<script type="text/javascript" src="/js/citron.js"></script>
+ 
+<!-- 공통코드 처리 Script -->
+<script type="text/javascript" src="/js/common.codeSetter.js"></script>

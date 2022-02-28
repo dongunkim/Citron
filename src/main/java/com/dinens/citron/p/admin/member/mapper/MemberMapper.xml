@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.member.mapper.MemberMapper">
+
+	<sql id="sqlWhereMemberList">
+		<if test="null != memberVO.condIdType and '' != memberVO.condIdType">
+			AND ID_TYPE_CODE = #{memberVO.condIdType}
+		</if>
+		<if test="null != memberVO.condMemberStatus and '' != memberVO.condMemberStatus">
+			AND MEMBER_STATUS_CODE = #{memberVO.condMemberStatus}
+		</if>
+		<if test="null != memberVO.startDate and '' != memberVO.startDate">
+			AND DATE_FORMAT(CREATE_TIME, '%Y-%m-%d') >=#{memberVO.startDate}
+		</if>
+		<if test="null != memberVO.endDate and '' != memberVO.endDate">
+			AND #{memberVO.endDate} >= DATE_FORMAT(CREATE_TIME, '%Y-%m-%d')
+		</if>		
+		<choose>						
+			<when test='memberVO.condSearchType == "id"'>
+				<if test='memberVO.condSearchStr != null and memberVO.condSearchStr != ""'>
+					AND MEMBER_ID LIKE CONCAT('%', #{memberVO.condSearchStr}, '%')
+				</if>
+			</when>
+			<when test='memberVO.condSearchType == "name"'>
+				<if test='memberVO.condSearchStr != null and memberVO.condSearchStr != ""'>
+					AND MEMBER_NAME LIKE CONCAT('%', #{memberVO.condSearchStr}, '%')
+				</if>
+			</when>
+		</choose>
+	</sql>
+	
+	<select id="selectMemberListCount" resultType="int">		
+		SELECT	/* MemberMapper.selectMemberListCount */
+				COUNT(*) AS TOTAL_COUNT
+		FROM	T_MEMBER
+		WHERE	1 = 1
+		<include refid="sqlWhereMemberList"/>
+	</select>
+	
+	<select id="selectMemberList" resultType="com.dinens.citron.p.admin.member.domain.MemberVO">		
+		SELECT	/* MemberMapper.selectMemberList */
+				MEMBER_ID,
+				MEMBER_NAME,
+				ID_TYPE_CODE,
+				FGET_CODENAME('0002', ID_TYPE_CODE) AS ID_TYPE_NAME,
+				MEMBER_STATUS_CODE,
+				FGET_CODENAME('0001', MEMBER_STATUS_CODE) AS MEMBER_STATUS_NAME,
+				DATE_FORMAT(JOIN_TIME,"%Y-%m-%d %H:%i:%s") AS JOIN_TIME,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME
+		FROM	T_MEMBER
+		WHERE	1 = 1
+		<include refid="sqlWhereMemberList"/>	
+		ORDER BY JOIN_TIME DESC
+		<if test='pagingVO != null'>
+		LIMIT	#{pagingVO.startNum}, #{pagingVO.countPerPage}
+		</if>
+	</select>
+	
+	<select id="selectMemberListExcel" resultType="hashmap">
+		SELECT	/* MemberMapper.selectMemberListExcel */				
+				MEMBER_ID,
+				MEMBER_NAME,
+				ID_TYPE_CODE,
+				FGET_CODENAME('0002', ID_TYPE_CODE) AS ID_TYPE_NAME,
+				MEMBER_STATUS_CODE,
+				FGET_CODENAME('0001', MEMBER_STATUS_CODE) AS MEMBER_STATUS_NAME,
+				DATE_FORMAT(JOIN_TIME,"%Y-%m-%d %H:%i:%s") AS JOIN_TIME,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME
+		FROM	T_MEMBER A
+		WHERE	1 = 1
+		<include refid="sqlWhereMemberList"/>
+		ORDER BY JOIN_TIME DESC		
+	</select>
+	
+	<select id="selectMemberDetail" resultType="com.dinens.citron.p.admin.member.domain.MemberVO">
+		SELECT	/* MemberMapper.selectMemberDetail */
+				MEMBER_ID,
+				MEMBER_NAME,
+				ID_TYPE_CODE,
+				FGET_CODENAME('0002', ID_TYPE_CODE) AS ID_TYPE_NAME,
+				MEMBER_STATUS_CODE,
+				FGET_CODENAME('0001', MEMBER_STATUS_CODE) AS MEMBER_STATUS_NAME,
+				DATE_FORMAT(JOIN_TIME,"%Y-%m-%d %H:%i:%s") AS JOIN_TIME,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_MEMBER
+		WHERE	MEMBER_ID = #{memberId}		
+	</select>	
+	
+</mapper>

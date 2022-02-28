@@ -1,0 +1,615 @@
+/* stylelint-disable selector-no-qualifying-type, property-no-vendor-prefix */
+body {padding-top: 50px;}
+footer {margin-top: 50px;}
+
+.container {
+  width: 1120px;
+  max-width: none !important;
+}
+
+/******************************************************************************
+ * bootstrap 반응형 off
+ *****************************************************************************/
+.form-horizontal .control-label {
+    padding-top: 7px;
+    margin-bottom: 0;
+    text-align: right;
+}
+
+.form-inline .form-control {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+}
+
+.form-inline .form-group {
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+i.glyphicon {
+	margin-top: -2px;
+    font-size: 20px;
+}
+/******************************************************************************
+ * 로그인
+ *****************************************************************************/
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+  margin-top:40px;
+}
+.form-signin .form-control {
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {  
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-signin .form-item-group {
+  margin-bottom: 10px;
+  position: relative;
+}
+.form-signin label.error {
+	margin-top: 5px;
+	font-size: small;
+	font-weight:normal;
+	color: red;	
+}
+.form-signin a.find-passwd {
+	color: currentColor;
+    text-decoration: underline;
+	font-size: small;
+	font-weight:normal;
+	margin-left: 70px;	
+}
+.form-signin i {
+	position:absolute;
+	top:15px;
+	left: 90%;
+	z-index: 99;
+}
+/******************************************************************************
+ * Layout
+ *****************************************************************************/
+/*
+ * Top 메뉴
+ */
+.navbar-fixed-top {
+  border: 0;
+}
+.navbar-brand {
+	font-size:25px;
+}
+
+.navbar-nav>li>a {
+	font-size: 16px;
+}
+
+.sidebar {
+	top: 30px;
+	bottom: 0;
+}
+
+.sidebar > h3 {
+	display:block;
+	padding-left: 10px;
+	padding-bottom: 10px;
+}
+
+
+.nav-sidebar {
+  margin-right: 10px;
+}
+
+/* 2 단계 메뉴 (Top메뉴:1단계) */
+.nav-sidebar > li > a {
+  color: rgb(105, 105, 105);
+  padding: 15px 0px;
+  font-size: 18px;
+}
+
+.nav-sidebar > .active > a {
+  color: rgb(66, 133, 244);
+  font-weight: 700;
+  background-color: transparent;
+}
+
+/* 하위 메뉴 존재 표시 및 Open 표시 */
+.nav-sidebar li.has-child > a:before {
+    content: '\276F';
+    padding-top: 3px;
+    padding-left: 3px;
+    font-size: 12px;
+    font-weight: normal;
+    float: right;
+    color: #b0b0b0;
+}
+.nav-sidebar li.has-child.open > a:before {
+    content: '\276F';
+    float: right;
+    font-size: 12px;
+    padding-left: 0px;
+    color: #b0b0b0;
+    font-weight: normal;
+    transform: rotateZ(90deg);
+}
+
+/* 3단계 메뉴 */
+.nav-sidebar > li > ul {
+	display: none;
+	padding-top: 10px;
+	padding-bottom: 10px;
+  border-top: 1px solid #e6e6e6;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.nav-sidebar > li.open > ul {
+	display: block;
+}
+
+.nav-sidebar .nav > li > a {
+	padding: 8px 15px 8px 10px;
+	font-size : 14px;
+  color: #767676;
+}
+
+.nav-sidebar .nav > .active > a {
+  color: rgb(66, 133, 244);
+  font-weight: 700;
+  background-color: transparent;
+}
+
+.nav .open > a:hover,
+.nav > li > a:hover {
+  background-color: transparent;
+  font-weight: 700;
+}
+
+/* 메뉴 선택 시 선택 표시 없애기 위함 */
+.nav .open>a,
+.nav .open>a:focus{
+	background-color: transparent;
+}
+.nav-sidebar > li > a:focus {
+  background-color: transparent;
+}
+
+/*
+ * 오른쪽 컨텐츠 영역
+ */
+/*
+.main {
+  padding: 20px;
+}
+@media (min-width: 768px) {
+  .main {
+    padding-right: 40px;
+    padding-left: 40px;
+  }
+}
+*/
+
+.main {
+  padding-left: 38.328px;
+  padding-right: 5px;
+  border-left: 1px solid #ddd;
+}
+
+.main .page-header {
+  margin-top: 30px;
+}
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.breadcrumb {
+  padding: 0px 15px;
+  background-color: #ffffff;
+  text-align: right;
+}
+
+/******************************************************************************
+ * 각 컨텐츠별 설정
+ *****************************************************************************/
+/*
+ * Placeholder dashboard ideas
+ */
+.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+  border-radius: 50%;
+}
+
+/*
+ * 목록 조회 조건 영역
+ */
+.well {
+  padding : 15px;
+}
+.search-group .form-group {
+	padding: 5px 15px 5px 0px;
+}
+
+/*
+ * 테이블 데이터 목록 상단
+ */
+.table-total{
+  padding:0px;
+}
+.table-total > p > span{
+  font-weight:700;
+  color:red;
+}
+
+.table-top-bordered {
+  border-top: 2px solid #ddd;
+  border-bottom: 2px solid #ddd;
+}
+.table-download{
+  vertical-align: middle;
+}
+
+/*
+ * 테이블 데이터 목록 하단
+ */
+.perpage { /* 페이지당 건수 */
+  padding:0px;
+}
+.perpage>select {
+  width:70px !important;
+}
+ /* 페이징 */
+.pagination {
+	margin: 0px;
+}
+.pagination>li>a {
+	padding: 6px 7px;
+	border: none
+}
+.btn-group-download {
+	margin-top: -3px;
+}
+.btn-group-area {
+	margin-top: 20px;
+}
+.btn-group-area>div {
+	padding: 0px;
+}
+
+/* 상세 페이지 테이블 */
+.table-info>tbody>tr>th,
+.table-info>tbody>tr>td {
+	height: 50px;
+	vertical-align: middle;
+}
+.table-info>tbody>tr>th{
+	background-color: #f5f5f5;
+}
+
+.table-info>tbody>tr>td>p {
+	vertical-align: middle;
+	margin: 10px 0px;
+}
+
+.table .col-xs-1,
+.table .col-xs-2,
+.table .col-xs-3,
+.table .col-xs-4,
+.table .col-xs-5,
+.table .col-xs-6,
+.table .col-xs-7,
+.table .col-xs-8,
+.table .col-xs-9,
+.table .col-xs-10,
+.table .col-xs-11,
+.table .col-xs-12 {
+	padding-left: 0px;
+}
+/* 폰트 색깔 */
+.fc-red {
+	color: red;
+}
+
+/*
+ * Tree Area
+ */
+.menu-tree {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  margin-bottom : 20px;
+  background-color: #FFF;
+	border: 1px solid #ddd;
+}
+.menu-tree .tree-body {
+  position: absolute;
+  overflow: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 20px 0px;
+}
+
+.menu-tree-left {
+	padding-left: 0px;
+}
+.menu-tree-right {
+	padding-right: 0px;
+}
+
+.mh-300 {
+	min-height: 300px;
+}
+.mh-320 {
+	min-height: 320px;
+}
+.mh-370 {
+	min-height: 370px;
+}
+.mh-420 {
+	min-height: 420px;
+}
+.mh-586 {
+	min-height: 586px;
+}
+.mh-600 {
+	min-height: 600px;
+}
+
+.h-570 {
+	height: 570px;
+}
+
+.w-70 {
+	width: 70px !important;
+}
+.w-100 {
+	width: 100px !important;
+}
+.w-150 {
+	width: 150px !important;
+}
+
+.mr-10 {
+	margin-right: 10px;
+}
+/* 메뉴 미선택시 */
+.no-select-menu {
+	height:586px;
+	text-align:center;
+	border:1px solid #dadee7;
+	background:#fff;
+}
+.no-select-menu > .no-select-menu-text {
+	display:inline-block;
+	margin-top:280px;
+	color:#be0000;
+}
+ 
+.table-fixed{
+	overflow-y: auto;
+	margin-bottom: 20px;
+	border:1px solid #ddd
+}
+.table-fixed tbody tr:hover > td {
+	cursor: pointer;
+}
+
+.sub-item-header {
+	font-size: 15px;
+	font-weight: 600;
+	color: grey;
+	padding-left: 5px;
+	margin-top: 10px;
+	border-left: 5px solid grey;
+}
+
+/******************************************************************************
+ * 파일 업로드 스타일
+ *****************************************************************************/
+.ajax-upload-dragdrop {
+	border:2px dotted #ddd;
+	width: 100%;
+	color: #DADCE3;
+	text-align:left;
+	vertical-align:middle;
+	padding: 20px 20px;
+}
+
+.ajax-file-upload-statusbar {
+border: none;
+margin-top: 10px;
+width: 100%;
+margin-right: 10px;
+margin: 5px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+border-radius: 4px;
+}
+.ajax-file-upload-statusbar:first-child {
+	margin-top: 12px;
+}
+.ajax-file-upload-filename > p {
+	color: grey;
+	text-align: center;
+}
+.ajax-file-upload-red {
+	margin-left: 5px;
+	font-size: 21px;
+	font-weight: 700;
+	line-height: 1;
+	cursor: pointer;
+	color: #000;
+	text-shadow: 0 1px 0 #fff;
+	filter: alpha(opacity=20);
+	opacity: .2;
+}
+
+.btn {
+    padding: 6px 20px;
+}
+
+.btn-sm{
+    padding: 3px 15px;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #2c7be5;
+    border-color: #2c7be5;
+}
+.btn-primary:hover {
+    color: #fff;
+    background-color: #1a68d1;
+    border-color: #1862c6;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #6e84a3;
+    border-color: #6e84a3;
+}
+
+.btn-outline-primary {
+    color: #2c7be5;
+    border-color: #2c7be5;
+    font-weight: 700;
+}
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #2c7be5;
+    border-color: #2c7be5;
+}
+.btn-secondary:hover {
+    color: #fff;
+    background-color: #5b7190;
+    border-color: #566b88;
+}
+
+/* summernote 플러그인 */
+blockquote {
+ border-left:5px solid #f86466;
+ background:white
+}
+
+/* Datepicker 요일 표시 */
+.ui-datepicker-calendar > thead th.ui-datepicker-week-end:first-child {
+	color: red;
+}
+.ui-datepicker-calendar > thead th.ui-datepicker-week-end:last-child {
+	color: blue;
+}
+
+/******************************************************************************
+ * 비밀번호 변경
+ *****************************************************************************/
+ .change-password label.error {
+	margin-top: 5px;
+	font-size: small;
+	font-weight:normal;
+	color: red;	
+}
+
+.change-password label.server-error {
+	margin-top: 5px;
+	font-size: small;
+	font-weight:normal;
+	color: red;	
+}
+.change-password i {
+	position: absolute;
+    top: 11px;
+    left: 325px;
+    z-index: 99;
+}
+/******************************************************************************
+ * 비밀번호 찾기
+ *****************************************************************************/
+ .form-findPasswd {
+  max-width: 50%;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-findPasswd .form-control {
+  position: relative;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  height: auto;
+  width: 80%;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-findPasswd .form-findPasswd-heading {
+  margin-bottom: 10px;
+}
+.form-findPasswd .form-control:focus {
+  z-index: 2;
+}
+.form-findPasswd input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-findPasswd input[type="text"] {  
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.form-findPasswd hr {
+	border-top:2px solid #eee; 
+	margin-top: 10px; 
+	margin-bottom: 10px;
+}
+.form-findPasswd .btn-next {
+	position: absolute; 
+	right: 3px; 
+	top: 3px;
+}
+.form-findPasswd .form-item-group {  
+  position: relative;
+  margin: 0 40px 10px 40px;  
+}
+.form-findPasswd label.error {
+	margin-top: 5px;
+	font-size: small;
+	font-weight:normal;
+	color: red;	
+}
+

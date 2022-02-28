@@ -1,0 +1,83 @@
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+<tiles-definitions>
+
+	<!-- Sample 페이지 tiles -->
+	<definition name="base"   template="/WEB-INF/views/layout/template.jsp">
+		<put-attribute name="title"  value="CITRON" />
+		<put-attribute name="header"  value="/WEB-INF/views/layout/header.jsp" />	
+		<put-attribute name="body"   value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>	
+	
+	<definition name="/sample/*"   extends="base">		
+		<put-attribute name="body"   value="/WEB-INF/views/sample/{1}.jsp" />		
+	</definition>
+
+	<definition name=".base" template="/WEB-INF/views/layout/templateBase.jsp">
+		<put-attribute name="title"  value="CITRON" />
+		<put-attribute name="header"  value="/WEB-INF/views/layout/header.jsp" />	
+		<put-attribute name="top" value="/WEB-INF/views/layout/top.jsp" />
+		<put-attribute name="left" value="/WEB-INF/views/layout/left.jsp" />
+		<put-attribute name="pageHeader" value="/WEB-INF/views/layout/pageHeader.jsp" />
+		<put-attribute name="body"   value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+
+	<definition name=".onlybody" template="/WEB-INF/views/layout/templateOnlyBody.jsp">
+		<put-attribute name="title"  value="CITRON" />
+		<put-attribute name="header"  value="/WEB-INF/views/layout/header.jsp" />	
+    	<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+
+	<definition name=".error" template="/WEB-INF/views/layout/templateError.jsp">
+    	<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+
+	<definition name=".noLeft" template="/WEB-INF/views/layout/templateNoLeft.jsp">
+		<put-attribute name="title"  value="CITRON" />
+		<put-attribute name="header"  value="/WEB-INF/views/layout/header.jsp" />	
+		<put-attribute name="top" value="/WEB-INF/views/layout/top.jsp" />
+		<put-attribute name="body"   value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+
+	<definition name=".noLeftShort" template="/WEB-INF/views/layout/templateNoLeftShort.jsp">
+		<put-attribute name="title"  value="CITRON" />
+		<put-attribute name="header"  value="/WEB-INF/views/layout/header.jsp" />	
+		<put-attribute name="top" value="/WEB-INF/views/layout/top.jsp" />
+		<put-attribute name="body"   value="" />
+		<put-attribute name="footer" value="/WEB-INF/views/layout/footer.jsp" />
+	</definition>
+
+	<!-- Login -->
+	<definition name="/main/login" extends=".onlybody">
+	  <put-attribute name="body" value="/WEB-INF/views/main/login.jsp" />
+	</definition>
+
+	<definition name="/error/*" extends=".error">
+	  <put-attribute name="body" value="/WEB-INF/views/error/error.jsp" />
+	</definition>
+	
+	<definition name="/main/findPasswd*" extends=".onlybody">
+	  <put-attribute name="body" value="/WEB-INF/views/main/findPasswd{1}.jsp" />
+	</definition>
+
+	<!-- Main -->
+	<definition name="/main/main" extends=".noLeft">
+	  <put-attribute name="body" value="/WEB-INF/views/main/main.jsp" />
+	</definition>
+	
+	<!-- MyPage, ChangePassword -->
+	<definition name="/main/*" extends=".noLeftShort">
+	  <put-attribute name="body" value="/WEB-INF/views/main/{1}.jsp" />
+	</definition>
+
+	<!-- Base -->
+	<definition name="/*/*" extends=".base">
+	  <put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
+	</definition>
+
+</tiles-definitions>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- ================== Component Scan 설정 ================== -->
+	<!-- Root Context에는 Controller를 제외한 나머지 스캔 -->
+	<context:component-scan base-package="com.dinens.citron.p.admin">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	
+	<!-- ================== MultipartResolver 설정 ================== -->
+	<!-- FileUpload를 위해 필요 -->
+	<bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"> 
+		<property name="maxUploadSize" value="10485760" />
+		<property name="maxUploadSizePerFile" value="10485760" />		
+	</bean>
+	
+	
+	<!-- ================== MessageSource 설정 ================== -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">        
+        <property name="defaultEncoding" value="UTF-8"/>         
+        <property name="cacheSeconds" value="60"/>        
+        <property name="basenames">
+            <list>
+                <value>classpath:/messages/message</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- MessageSource를 사용하기 위한 Accessor 설정 -->
+    <bean id="messageSourceAccessor" class="org.springframework.context.support.MessageSourceAccessor">
+        <constructor-arg ref="messageSource"/>
+    </bean>
+     
+    <!-- MessageSource를 사용하기 위한 MessageUtils 매핑 -->
+    <bean id="message" class="com.dinens.citron.p.admin.common.util.MessageUtils">
+        <property name="messageSourceAccessor" ref="messageSourceAccessor"/>
+    </bean>
+    
+    <!-- MessageSource를 사용하기 위한 Locale 설정 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="ko"></property>
+    </bean>    
+    
+	
+</beans>

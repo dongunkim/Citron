@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.board.mapper.BoardMapper">
+	
+	<sql id="sqlWhereBoardList">
+		<if test="null != boardVO.startDate and '' != boardVO.startDate">
+			AND DATE_FORMAT(CREATE_TIME, '%Y-%m-%d') >=#{boardVO.startDate}
+		</if>
+		<if test="null != boardVO.endDate and '' != boardVO.endDate">
+			AND #{boardVO.endDate} >= DATE_FORMAT(CREATE_TIME, '%Y-%m-%d')
+		</if>
+		<choose>						
+			<when test='boardVO.condSearchType == "title"'>
+				<if test='boardVO.condSearchStr != null and boardVO.condSearchStr != ""'>
+					AND TITLE LIKE CONCAT('%', #{boardVO.condSearchStr}, '%')
+				</if>
+			</when>
+			<when test='boardVO.condSearchType == "content"'>
+				<if test='boardVO.condSearchStr != null and boardVO.condSearchStr != ""'>
+					AND CONTENT LIKE CONCAT('%', #{boardVO.condSearchStr}, '%')
+				</if>
+			</when>
+		</choose>
+	</sql>
+	
+	<select id="selectBoardListCount" resultType="int">		
+		SELECT	/* BoardMapper.selectBoardListCount */
+				COUNT(*) AS TOTAL_COUNT
+		FROM	T_BOARD
+		WHERE	USE_YN = 'Y'
+		<include refid="sqlWhereBoardList"/>
+	</select>
+	
+	<select id="selectBoardList" resultType="com.dinens.citron.p.admin.board.domain.BoardVO">		
+		SELECT	/* BoardMapper.selectBoardList */
+				BOARD_ID,
+				TITLE,
+				HIT_COUNT,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME
+		FROM	T_BOARD
+		WHERE	USE_YN = 'Y'
+		<include refid="sqlWhereBoardList"/>	
+		ORDER BY BOARD_ID DESC
+		<if test='pagingVO != null'>
+		LIMIT	#{pagingVO.startNum}, #{pagingVO.countPerPage}
+		</if>
+	</select>
+	
+	<select id="selectBoardListExcel" parameterType="com.dinens.citron.p.admin.board.domain.BoardVO" resultType="hashmap">
+		SELECT	/* BoardMapper.selectBoardListExcel */
+				BOARD_ID,
+				TITLE,
+				HIT_COUNT,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME
+		FROM	T_BOARD
+		WHERE	USE_YN = 'Y'
+		<include refid="sqlWhereBoardList"/>
+		ORDER BY BOARD_ID DESC		
+	</select>
+		
+	<select id="selectBoardDetail" parameterType="String" resultType="com.dinens.citron.p.admin.board.domain.BoardVO">
+		<![CDATA[
+			SELECT	/* BoardMapper.selectBoardDetail */
+					BOARD_ID,
+					TITLE,
+					CONTENT,
+					HIT_COUNT,
+					DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+					CREATE_ID,
+					DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME,
+					UPDATE_ID
+			FROM	T_BOARD
+			WHERE	BOARD_ID = #{boardId}			
+		]]>
+	</select>
+	
+	<insert id="insertBoard" parameterType="com.dinens.citron.p.admin.board.domain.BoardVO" useGeneratedKeys="true" keyProperty="idx">
+		<![CDATA[
+			INSERT INTO T_BOARD	/* BoardMapper.insertBoard */
+			(
+				BOARD_ID,
+				TITLE,
+				CONTENT,
+				HIT_COUNT,
+				USE_YN,
+				CREATE_ID
+			)
+			VALUES
+			(
+				#{boardId},
+				#{title},
+				#{content},
+				0,
+				'Y',
+				#{createId}			
+			)
+		]]>
+	</insert>
+	
+	<update id="updateHitCount" parameterType="String">
+		<![CDATA[
+			UPDATE	T_BOARD	/* BoardMapper.updateHitCount */
+			SET		HIT_COUNT = IFNULL(HIT_COUNT, 0) + 1
+			WHERE	BOARD_ID = #{boardId}
+		]]>
+	</update>
+	
+	<update id="updateBoard" parameterType="com.dinens.citron.p.admin.board.domain.BoardVO">
+		<![CDATA[
+			UPDATE	T_BOARD	/* BoardMapper.updateBoard */
+			SET		TITLE = #{title},
+					CONTENT = #{content},
+					UPDATE_ID = #{updateId},
+					UPDATE_TIME = CURRENT_TIMESTAMP
+			WHERE	BOARD_ID = #{boardId}
+		]]>
+	</update>
+	
+	<delete id="deleteBoard" parameterType="String">
+		<![CDATA[
+			UPDATE	T_BOARD	/* BoardMapper.updateBoard */
+			SET		USE_YN = 'N',
+					UPDATE_ID = #{updateId},
+					UPDATE_TIME = CURRENT_TIMESTAMP
+			WHERE	BOARD_ID = #{boardId}
+		]]>
+	</delete>
+	
+	<select id="selectFileList" parameterType="String" resultType="com.dinens.citron.p.admin.board.domain.BoardFileVO">
+		<![CDATA[
+			SELECT	/* BoardMapper.selectFileList */
+					BOARD_ID,
+					FILE_SEQ,
+					ORG_FILE_NAME,
+					FILE_PATH,
+					FILE_SIZE,
+					FGET_FILESIZE(FILE_SIZE) AS FILE_SIZE_STR
+			FROM	T_BOARD_FILE
+			WHERE	BOARD_ID = #{boardId}
+			AND		USE_YN = 'Y'
+		]]>
+	</select>
+	
+	<select id="selectFileDetail" parameterType="String" resultType="com.dinens.citron.p.admin.board.domain.BoardFileVO">
+		<![CDATA[
+			SELECT	/* BoardMapper.selectFileDetail */
+					BOARD_ID,
+					FILE_SEQ,
+					ORG_FILE_NAME,
+					FILE_PATH,
+					FILE_SIZE,
+					FGET_FILESIZE(FILE_SIZE) AS FILE_SIZE_STR
+			FROM	T_BOARD_FILE
+			WHERE	FILE_SEQ = #{fileSeq}
+		]]>
+	</select>
+	
+	<insert id="insertFile" parameterType="com.dinens.citron.p.admin.board.domain.BoardFileVO">
+		<![CDATA[
+			INSERT INTO T_BOARD_FILE		/* BoardMapper.insertFile */
+			(
+				BOARD_ID,
+				FILE_SEQ,
+				ORG_FILE_NAME,
+				FILE_PATH,
+				FILE_SIZE,				
+				CREATE_ID
+			)
+			VALUES
+			(
+				#{boardId},
+				#{fileSeq},
+				#{orgFileName},
+				#{filePath},
+				#{fileSize},				
+				#{createId}
+			)
+		]]>
+	</insert>
+		
+	<update id="updateFile" parameterType="String">
+		<![CDATA[
+			UPDATE	T_BOARD_FILE		/* BoardMapper.updateFile */
+			SET		USE_YN = 'Y',
+					UPDATE_ID = #{updateId},
+					UPDATE_TIME = CURRENT_TIMESTAMP
+			WHERE	FILE_SEQ = #{fileSeq}
+		]]>
+	</update>
+	
+	<update id="deleteFileList" parameterType="String">
+		<![CDATA[
+			UPDATE	T_BOARD_FILE		/* BoardMapper.deleteFile */
+			SET		USE_YN = 'N',
+					UPDATE_ID = #{updateId},
+					UPDATE_TIME = CURRENT_TIMESTAMP
+			WHERE	BOARD_ID = #{boardId}
+		]]>
+	</update>
+	
+</mapper>

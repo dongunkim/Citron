@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.main.mapper.MainMapper">
+	<select id="selectAdminDetail" parameterType="String" resultType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		SELECT	/* MainMapper.selectAdminDetail */
+				ADMIN_ID,
+				ADMIN_NAME,
+				ADMIN_GROUP_ID,
+				(SELECT ADMIN_GROUP_NAME FROM T_ADMIN_GROUP WHERE ADMIN_GROUP_ID = A.ADMIN_GROUP_ID) ADMIN_GROUP_NAME,				
+				PHONE_NUMBER,
+				EMAIL,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	
+				T_ADMIN A
+		WHERE	
+				ADMIN_ID = #{adminId}
+	</select>
+	
+	<update id="updateAdmin" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		UPDATE	/* MainMapper.updateAdmin */ 
+				T_ADMIN
+		SET		
+				ADMIN_NAME = #{adminName},
+				PHONE_NUMBER = #{phoneNumber},
+				EMAIL = #{email},				
+				UPDATE_ID = #{updateId},
+				UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE
+				ADMIN_ID = #{adminId}
+	</update>
+	
+	<update id="updateAdminPassword" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		UPDATE	/* MainMapper.updateAdminPassword */
+				T_ADMIN
+		SET		
+				PASSWORD = PASSWORD(CONCAT(#{passwordSalt}, #{newPassword})),
+				PASSWORD_SALT = #{passwordSalt},
+				UPDATE_ID = #{updateId},
+				UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE	
+				ADMIN_ID = #{adminId}	
+	</update>
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.main.mapper.LoginMapper">
+	<select id="loginCheck" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO" resultType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		<![CDATA[
+			SELECT	/* LoginMapper.loginCheck */
+					ADMIN_ID,
+					ADMIN_GROUP_ID,
+					PASSWORD,
+					PASSWORD_SALT,
+					DATE_FORMAT(PASSWORD_UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS PASSWORD_UPDATE_TIME,
+					ADMIN_NAME,
+					PHONE_NUMBER,
+					EMAIL,					
+					USE_YN,
+					CREATE_ID,
+					DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+					UPDATE_ID,
+					DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+			FROM
+					T_ADMIN
+			WHERE
+					ADMIN_ID = #{adminId}
+			AND		PASSWORD = PASSWORD(CONCAT(PASSWORD_SALT, #{password}))
+		]]>
+	</select>
+	
+	<select id="checkAdminInfo" resultType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		<![CDATA[
+			SELECT	/* LoginMapper.checkAdminInfo */
+					ADMIN_ID,
+					ADMIN_GROUP_ID,					
+					ADMIN_NAME,
+					PHONE_NUMBER,
+					EMAIL
+			FROM		
+					T_ADMIN
+			WHERE
+					ADMIN_ID = #{adminId}
+		]]>
+	</select>
+	
+	<select id="checkIssueHist" resultType="int">
+		<![CDATA[
+			SELECT	/* LoginMapper.checkIssueHist */
+					COUNT(*)
+			FROM		
+					T_ISSUE_HIST
+			WHERE
+					ISSUE_KEY = PASSWORD(#{issueKey})
+			AND		CREATE_TIME < DATE_ADD(NOW(), INTERVAL #{expire} MINUTE)
+			AND		ISSUE_TYPE = #{issueType}
+		]]>
+	</select>	
+	
+</mapper>

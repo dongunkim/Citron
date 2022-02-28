@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.code.mapper.CodeMapper">
+
+	<select id="selectCodeList" parameterType="com.dinens.citron.p.admin.code.domain.CodeVO" resultType="com.dinens.citron.p.admin.code.domain.CodeVO">
+		SELECT	/* CodeMapper.selectCodeList */
+				CODE_ID,
+				CODE_NAME,
+				DESCRIPTION,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_CODE
+		WHERE	1 = 1
+		ORDER BY CODE_ID
+	</select>
+
+	<select id="selectCodeDetail" parameterType="com.dinens.citron.p.admin.code.domain.CodeVO" resultType="com.dinens.citron.p.admin.code.domain.CodeVO">
+		SELECT	/* CodeMapper.selectCodeDetail */
+				CODE_ID,
+				CODE_NAME,
+				DESCRIPTION,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_CODE A
+		WHERE	CODE_ID = #{codeId}
+	</select>
+
+	<insert id="insertCode" parameterType="com.dinens.citron.p.admin.code.domain.CodeVO">
+		INSERT INTO /* CodeMapper.selectCodeDetail */ T_CODE
+		(
+			CODE_ID,
+			CODE_NAME,
+			DESCRIPTION,
+			USE_YN,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{codeId},
+			#{codeName},
+			#{description},
+			#{useYn},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<update id="updateCode" parameterType="com.dinens.citron.p.admin.code.domain.CodeVO">
+		UPDATE /* CodeMapper.updateCode */ T_CODE
+		SET
+			CODE_NAME = #{codeName},
+			DESCRIPTION = #{description},
+			USE_YN = #{useYn},
+			UPDATE_ID = #{updateId},
+			UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE
+			CODE_ID = #{codeId}
+	</update>
+	
+	<delete id="deleteCode" parameterType="com.dinens.citron.p.admin.code.domain.CodeVO">
+		DELETE FROM /* CodeMapper.deleteCode */ T_CODE
+		WHERE
+			CODE_ID = #{codeId}
+	</delete>
+
+</mapper>

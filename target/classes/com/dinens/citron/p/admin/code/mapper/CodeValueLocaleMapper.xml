@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.code.mapper.CodeValueLocaleMapper">
+
+	<select id="selectCodeValueLocaleList" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueLocaleVO" resultType="com.dinens.citron.p.admin.code.domain.CodeValueLocaleVO">
+		SELECT	/* CodeValueLocaleMapper.selectCodeValueLocaleList */
+				CODE_ID,
+				VALUE,
+				LOCALE_CODE,
+				NAME,
+				DISPLAY_ORDER,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME
+		FROM	T_CODE_VALUE_LOCALE
+		WHERE	CODE_ID = #{codeId}
+		  AND	VALUE = #{value}
+		ORDER BY DISPLAY_ORDER ASC
+	</select>
+
+	<insert id="insertCodeValueLocale" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueLocaleVO">
+		INSERT INTO /* CodeValueLocaleMapper.insertCodeValueLocale */ T_CODE_VALUE_LOCALE
+		(
+			CODE_ID,
+			VALUE,
+			LOCALE_CODE,
+			NAME,
+			DISPLAY_ORDER,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{codeId},
+			#{value},
+			#{localeCode},
+			#{name},
+			#{displayOrder},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<delete id="deleteCodeValueLocale" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueLocaleVO">
+		DELETE FROM /* CodeValueLocaleMapper.deleteCodeValueLocale */ T_CODE_VALUE_LOCALE
+		WHERE	CODE_ID = #{codeId}
+		  AND	VALUE = #{value}
+	</delete>
+
+</mapper>

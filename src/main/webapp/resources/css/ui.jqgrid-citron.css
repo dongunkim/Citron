@@ -1,0 +1,48 @@
+/******************************************************************************
+ * jqGrid 설정
+ *****************************************************************************/
+.ui-jqgrid .ui-jqgrid-pager,
+.ui-jqgrid .ui-jqgrid-view {
+	font-size: 13px;
+}
+
+.ui-jqgrid .ui-jqgrid-htable th div {
+    overflow: hidden;
+    position: relative;
+    color: black;
+}
+
+.ui-jqgrid .ui-jqgrid-htable th {
+    padding: 7px;
+}
+.ui-jqgrid tr.jqgrow td {
+    padding: 7px;
+    cursor: pointer;
+}
+/*
+.ui-jqgrid .ui-jqgrid-htable th div {
+    overflow: hidden;
+    position: relative;
+    height: 30px;
+    padding-top: 5px;
+}
+.ui-jqgrid .ui-jqgrid-view {
+    position: relative;
+    left: 5;
+    top: 5;
+    padding: 10;
+    font-size: 14px;
+}
+
+.ui-jqgrid tr.jqgrow td {
+    font-weight: normal;
+    overflow: hidden;
+    white-space: pre;
+    height: 30px;
+    padding: 0 10px 0 10px;
+    border-bottom-width: 1px;
+    border-bottom-color: inherit;
+    border-bottom-style: solid;
+}
+*/
+

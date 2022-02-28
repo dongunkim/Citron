@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.admingroup.mapper.AdminGroupMapper">
+
+	<sql id="sqlWhereAdminGroupList">
+		<if test='adminGroupVO.condAdminGroupName != null and adminGroupVO.condAdminGroupName != ""'>
+		  AND	ADMIN_GROUP_NAME LIKE CONCAT('%',#{adminGroupVO.condAdminGroupName},'%')
+		</if>
+		<if test='adminGroupVO.condUseYn != null and adminGroupVO.condUseYn != ""'>
+		  AND	USE_YN = #{adminGroupVO.condUseYn}
+		</if>
+	</sql>
+	
+	<!--  -->
+	<select id="selectAdminGroupListCount" parameterType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO" resultType="int">
+		SELECT	/* AdminMapper.selectAdminListCount */
+				COUNT(*)
+		FROM	T_ADMIN_GROUP A
+		WHERE	1 = 1
+		<include refid="sqlWhereAdminGroupList"/>
+	</select>
+
+	<!--  -->
+	<select id="selectAdminGroupList" parameterType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO" resultType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO">
+		SELECT	/* AdminGroupMapper.selectAdminGroupList */
+				ADMIN_GROUP_ID,
+				ADMIN_GROUP_NAME,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_ADMIN_GROUP A
+		WHERE	1 = 1
+		<include refid="sqlWhereAdminGroupList"/>
+		ORDER BY ADMIN_GROUP_NAME
+		<if test='pagingVO != null and pagingVO.countPerPage != 0'>
+		LIMIT	#{pagingVO.startNum}, #{pagingVO.countPerPage}
+		</if>
+	</select>
+
+	<!--  -->
+	<select id="selectAdminGroupListExcel" parameterType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO" resultType="hashmap">
+		SELECT	/* AdminGroupMapper.selectAdminGroupListExcel */
+				ADMIN_GROUP_ID,
+				ADMIN_GROUP_NAME,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_ADMIN_GROUP A
+		WHERE	1 = 1
+		<include refid="sqlWhereAdminGroupList"/>
+		ORDER BY ADMIN_GROUP_NAME
+	</select>
+
+	<select id="selectAdminGroupDetail" parameterType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO" resultType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO">
+		SELECT	/* AdminGroupMapper.selectAdminGroupDetail */
+				ADMIN_GROUP_ID,
+				ADMIN_GROUP_NAME,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_ADMIN_GROUP A
+		WHERE	ADMIN_GROUP_ID = #{adminGroupId}
+	</select>
+
+	<insert id="insertAdminGroup" parameterType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO">
+		INSERT INTO /* AdminGroupMapper.insertAdminGroup */ T_ADMIN_GROUP
+		(
+			ADMIN_GROUP_ID,
+			ADMIN_GROUP_NAME,
+			USE_YN,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{adminGroupId},
+			#{adminGroupName},
+			#{useYn},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<update id="updateAdminGroup" parameterType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO">
+		UPDATE /* AdminGroupMapper.updateAdminGroup */ T_ADMIN_GROUP
+		SET
+			ADMIN_GROUP_NAME = #{adminGroupName},
+			USE_YN = #{useYn},
+			UPDATE_ID = #{updateId},
+			UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE
+			ADMIN_GROUP_ID = #{adminGroupId}
+	</update>
+	
+	<delete id="deleteAdminGroup" parameterType="com.dinens.citron.p.admin.admingroup.domain.AdminGroupVO">
+		DELETE /* AdminGroupMapper.deleteAdminGroup */ FROM T_ADMIN_GROUP
+		WHERE
+			ADMIN_GROUP_ID = #{adminGroupId}
+	</delete>
+</mapper>

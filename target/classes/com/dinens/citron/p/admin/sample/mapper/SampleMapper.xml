@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.sample.mapper.SampleMapper">
+
+	<select id="loginCheck" parameterType="com.dinens.citron.p.admin.sample.domain.Admin" resultType="com.dinens.citron.p.admin.sample.domain.Admin">
+		<![CDATA[
+			SELECT
+					ADMIN_ID,
+					ADMIN_GROUP_ID,
+					PASSWORD,
+					PASSWORD_SALT,
+					DATE_FORMAT(PASSWORD_UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS PASSWORD_UPDATE_TIME,
+					ADMIN_NAME,
+					PHONE_NUMBER,
+					EMAIL,					
+					USE_YN,
+					CREATE_ID,
+					DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+					UPDATE_ID,
+					DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+			FROM
+					T_ADMIN
+			WHERE
+					ADMIN_ID = #{adminId}
+			AND		PASSWORD = PASSWORD(CONCAT(PASSWORD_SALT, #{password}))
+		]]>
+	</select>
+	
+	<select id="selectAdminList" parameterType="com.dinens.citron.p.admin.sample.domain.Admin" resultType="com.dinens.citron.p.admin.sample.domain.Admin">
+		<![CDATA[
+			SELECT
+					ADMIN_ID,
+					ADMIN_GROUP_ID,
+					PASSWORD,
+					PASSWORD_SALT,
+					DATE_FORMAT(PASSWORD_UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS PASSWORD_UPDATE_TIME,
+					ADMIN_NAME,
+					PHONE_NUMBER,
+					EMAIL,					
+					USE_YN,
+					CREATE_ID,
+					DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+					UPDATE_ID,
+					DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+			FROM
+					T_ADMIN
+			WHERE
+					USE_YN = #{useYn}
+		]]>
+	</select>
+	
+	<select id="selectAdminDetail" parameterType="com.dinens.citron.p.admin.sample.domain.Admin" resultType="com.dinens.citron.p.admin.sample.domain.Admin">
+		<![CDATA[
+			SELECT
+					ADMIN_ID,
+					ADMIN_GROUP_ID,
+					PASSWORD,
+					PASSWORD_SALT,
+					DATE_FORMAT(PASSWORD_UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS PASSWORD_UPDATE_TIME,
+					ADMIN_NAME,
+					PHONE_NUMBER,
+					EMAIL,					
+					USE_YN,
+					CREATE_ID,
+					DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+					UPDATE_ID,
+					DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+			FROM
+					T_ADMIN
+			WHERE
+					ADMIN_ID = #{adminId}
+		]]>
+	</select>
+	
+	<insert id="insertAdmin" parameterType="com.dinens.citron.p.admin.sample.domain.Admin">
+		<![CDATA[
+			INSERT INTO T_ADMIN
+			(
+				ADMIN_ID,
+				ADMIN_GROUP_ID,
+				PASSWORD,
+				PASSWORD_SALT,
+				PASSWORD_UPDATE_TIME,			
+				ADMIN_NAME,
+				PHONE_NUMBER,
+				EMAIL,
+				USE_YN,
+				CREATE_ID,
+				CREATE_TIME
+			)
+			VALUES
+			(
+				#{adminId},
+				#{adminGroupId},
+				PASSWORD(CONCAT(#{passwordSalt}, #{password})),
+				#{passwordSalt},
+				CURRENT_TIMESTAMP,
+				#{adminName},
+				#{phoneNumber},
+				#{email},
+				"Y",
+				#{adminId},
+				CURRENT_TIMESTAMP
+			)
+		]]>
+	</insert>
+	
+	<update id="updateAdmin" parameterType="com.dinens.citron.p.admin.sample.domain.Admin">
+		<![CDATA[
+			UPDATE T_ADMIN
+			SET
+				ADMIN_GROUP_ID = #{adminGroupId},
+				ADMIN_NAME = #{adminName},
+				PHONE_NUMBER = #{phoneNumber},
+				EMAIL = #{email},
+				UPDATE_ID = #{adminId},
+				UPDATE_TIME = CURRENT_TIMESTAMP
+			WHERE
+				ADMIN_ID = #{adminId}
+		]]>
+	</update>
+	
+	<update id="updateAdminPassword" parameterType="com.dinens.citron.p.admin.sample.domain.Admin">
+		<![CDATA[
+			UPDATE T_ADMIN
+			SET
+				PASSWORD = PASSWORD(CONCAT(#{passwordSalt}, #{password})),
+				PASSWORD_SALT = #{passwordSalt},				
+				UPDATE_ID = #{adminId},
+				UPDATE_TIME = CURRENT_TIMESTAMP
+			WHERE
+				ADMIN_ID = #{adminId}	
+		]]>
+	</update>
+		
+	<delete id="deleteAdmin" parameterType="com.dinens.citron.p.admin.sample.domain.Admin">
+		<![CDATA[
+			UPDATE T_ADMIN
+			SET
+				USE_YN = 'N',
+				UPDATE_ID = #{adminId},
+				UPDATE_TIME = CURRENT_TIMESTAMP
+			WHERE
+				ADMIN_ID = #{adminId}
+		]]>
+	</delete>
+	
+	<select id="selectBoardListCount" resultType="int">		
+			SELECT
+					COUNT(0) as totalCount
+			FROM
+					TB_BOARD
+			WHERE
+					DEL_GB = 'N'
+					<choose>						
+						<when test='boardVO.condSearchType == "title"'>
+							<if test='boardVO.condSearchStr != null and boardVO.condSearchStr != ""'>
+								AND title LIKE CONCAT('%', #{boardVO.condSearchStr}, '%')
+							</if>
+						</when>
+						<when test='boardVO.condSearchType == "content"'>
+							<if test='boardVO.condSearchStr != null and boardVO.condSearchStr != ""'>
+								AND contents LIKE CONCAT('%', #{boardVO.condSearchStr}, '%')
+							</if>
+						</when>
+					</choose>
+			
+					<if test="null!=boardVO.startDate and ''!= boardVO.startDate">
+						AND 	DATE_FORMAT(crea_dtm, '%Y-%m-%d') >=#{boardVO.startDate}
+					</if>
+					<if test="null!=boardVO.endDate and ''!= boardVO.endDate">
+						AND 	#{boardVO.endDate} >= DATE_FORMAT(crea_dtm, '%Y-%m-%d')
+					</if>					
+	</select>
+	
+	<select id="selectBoardList" resultType="com.dinens.citron.p.admin.sample.domain.Board">		
+			SELECT
+					IDX,
+					TITLE,
+					HIT_CNT,
+					DATE_FORMAT(CREA_DTM,"%Y-%m-%d %H:%i:%s") AS CREA_DTM
+			FROM
+					TB_BOARD
+			WHERE
+					DEL_GB = 'N'
+					<choose>						
+						<when test='boardVO.condSearchType == "title"'>
+							<if test='boardVO.condSearchStr != null and boardVO.condSearchStr != ""'>
+								AND title LIKE CONCAT('%', #{boardVO.condSearchStr}, '%')
+							</if>
+						</when>
+						<when test='boardVO.condSearchType == "content"'>
+							<if test='boardVO.condSearchStr != null and boardVO.condSearchStr != ""'>
+								AND contents LIKE CONCAT('%', #{boardVO.condSearchStr}, '%')
+							</if>
+						</when>
+					</choose>
+			
+					<if test="null!=boardVO.startDate and ''!= boardVO.startDate">
+						AND 	DATE_FORMAT(crea_dtm, '%Y-%m-%d') >=#{boardVO.startDate}
+					</if>
+					<if test="null!=boardVO.endDate and ''!= boardVO.endDate">
+						AND 	#{boardVO.endDate} >= DATE_FORMAT(crea_dtm, '%Y-%m-%d')
+					</if>
+			ORDER BY IDX DESC
+			LIMIT	#{pagingVO.startNum}, #{pagingVO.countPerPage}
+	</select>
+	
+	<select id="selectBoardExcelList" parameterType="com.dinens.citron.p.admin.sample.domain.Board" resultType="hashmap">
+		<![CDATA[
+			SELECT
+					IDX,
+					TITLE,
+					HIT_CNT,
+					DATE_FORMAT(CREA_DTM,"%Y-%m-%d %H:%i:%s") AS CREA_DTM
+			FROM
+					TB_BOARD
+			WHERE
+					DEL_GB = 'N'
+			ORDER BY IDX DESC
+		]]>
+	</select>
+	
+	<select id="selectFileList" parameterType="com.dinens.citron.p.admin.sample.domain.Board" resultType="com.dinens.citron.p.admin.sample.domain.BoardFile">
+		<![CDATA[
+			SELECT
+					IDX,
+					ORIGINAL_FILE_NAME,
+					FILE_SIZE,
+					FGET_FILESIZE(FILE_SIZE) AS FILE_SIZE_STR
+			FROM
+					TB_FILE
+			WHERE
+					BOARD_IDX = #{idx}
+			AND		DEL_GB = 'N'
+		]]>
+	</select>
+	
+	<select id="selectBoardDetail" parameterType="com.dinens.citron.p.admin.sample.domain.Board" resultType="com.dinens.citron.p.admin.sample.domain.Board">
+		<![CDATA[
+			SELECT
+					IDX,
+					TITLE,
+					CONTENTS,
+					HIT_CNT,
+					DATE_FORMAT(CREA_DTM,"%Y-%m-%d %H:%i:%s") AS CREA_DTM,
+					CREA_ID
+			FROM
+					TB_BOARD
+			WHERE
+					IDX = #{idx}			
+		]]>
+	</select>
+	
+	<insert id="insertBoard" parameterType="com.dinens.citron.p.admin.sample.domain.Board" useGeneratedKeys="true" keyProperty="idx">
+		<![CDATA[
+			INSERT INTO TB_BOARD
+			(
+				TITLE,
+				CONTENTS,
+				HIT_CNT,
+				DEL_GB,
+				CREA_ID
+			)
+			VALUES
+			(
+				#{title},
+				#{contents},
+				0,
+				'N',
+				'Admin'				
+			)
+		]]>
+	</insert>
+	
+	<insert id="insertFile" parameterType="com.dinens.citron.p.admin.sample.domain.BoardFile">
+		<![CDATA[
+			INSERT INTO TB_FILE
+			(
+				BOARD_IDX,
+				ORIGINAL_FILE_NAME,
+				STORED_FILE_NAME,
+				FILE_SIZE,				
+				CREA_ID
+			)
+			VALUES
+			(
+				#{boardIdx},
+				#{originalFileName},
+				#{storedFileName},
+				#{fileSize},				
+				'Admin'				
+			)
+		]]>
+	</insert>
+	
+	<update id="updateHitCount" parameterType="com.dinens.citron.p.admin.sample.domain.Board">
+		<![CDATA[
+			UPDATE TB_BOARD
+			SET
+				HIT_CNT = IFNULL(HIT_CNT, 0) + 1
+			WHERE
+				IDX = #{idx}
+		]]>
+	</update>
+	
+	<update id="updateBoard" parameterType="com.dinens.citron.p.admin.sample.domain.Board">
+		<![CDATA[
+			UPDATE TB_BOARD
+			SET
+				TITLE = #{title},
+				CONTENTS = #{contents}
+			WHERE
+				IDX = #{idx}
+		]]>
+	</update>
+	
+	<update id="deleteFileList" parameterType="com.dinens.citron.p.admin.sample.domain.Board">
+		<![CDATA[
+			UPDATE
+					TB_FILE
+			SET
+					DEL_GB = 'Y'
+			WHERE
+					BOARD_IDX = #{idx}
+		]]>
+	</update>
+	
+	<update id="updateFile" parameterType="com.dinens.citron.p.admin.sample.domain.BoardFile">
+		<![CDATA[
+			UPDATE
+					TB_FILE
+			SET
+					DEL_GB = 'N'
+			WHERE
+					IDX = #{idx}
+		]]>
+	</update>
+	<delete id="deleteBoard" parameterType="com.dinens.citron.p.admin.sample.domain.Board">
+		<![CDATA[
+			UPDATE TB_BOARD
+			SET
+				DEL_GB = 'Y'
+			WHERE
+				IDX = #{idx}
+		]]>
+	</delete>	
+	
+</mapper>

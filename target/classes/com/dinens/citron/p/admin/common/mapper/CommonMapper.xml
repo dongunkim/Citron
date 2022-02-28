@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.common.mapper.CommonMapper">
+		
+	<select id="selectKeyInfo" parameterType="String" resultType="com.dinens.citron.p.admin.common.domain.KeyInfoVO">
+		<![CDATA[
+			SELECT
+					SESSION_ID,
+					PRIVATE_KEY AS PRIVATE_KEY_STR
+			FROM
+					T_KEY_INFO
+			WHERE
+					SESSION_ID = #{sessionId}
+			ORDER BY
+					CREATE_TIME DESC
+			LIMIT 1
+		]]>
+	</select>
+	
+	<insert id="insertKeyInfo" parameterType="com.dinens.citron.p.admin.common.domain.KeyInfoVO">
+		<![CDATA[
+			INSERT INTO T_KEY_INFO
+			(
+				SESSION_ID,
+				PRIVATE_KEY
+			)
+			VALUES
+			(
+				#{sessionId},
+				#{privateKeyStr}
+			)			
+		]]>
+	</insert>
+	
+	<delete id="deleteKeyInfo" parameterType="String">
+		<![CDATA[
+			DELETE FROM T_KEY_INFO
+			WHERE
+					SESSION_ID = #{sessionId}
+		]]>
+	</delete>
+	
+	<select id="selectEmailSendHistList" parameterType="com.dinens.citron.p.admin.common.domain.EmailSendHistVO" resultType="com.dinens.citron.p.admin.common.domain.EmailSendHistVO">
+		<![CDATA[
+			SELECT
+					EMAIL_SEND_ID,
+					EMAIL,
+					SEND_REASON_CODE,
+					SEND_STATUS,
+					CREATE_ID,
+					DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME
+			FROM
+					T_EMAIL_SEND_HIST
+			WHERE
+					EMAIL = #{email}
+		]]>
+	</select>
+	
+	<insert id="insertEmailSendHistInfo" parameterType="com.dinens.citron.p.admin.common.domain.EmailSendHistVO">
+		<![CDATA[
+			INSERT INTO T_EMAIL_SEND_HIST
+			(
+				EMAIL,
+				SEND_REASON_CODE,
+				SEND_STATUS,
+				CREATE_ID
+			)
+			VALUES
+			(
+				#{email},
+				#{sendReasonCode},
+				#{sendStatus},
+				#{createId}
+			)			
+		]]>
+	</insert>
+	
+	<insert id="insertIssueHist" parameterType="com.dinens.citron.p.admin.common.domain.IssueHistVO">
+		<![CDATA[
+			INSERT INTO T_ISSUE_HIST
+			(
+				ISSUE_TYPE,
+				ISSUE_KEY
+			)
+			VALUES
+			(
+				#{issueType},
+				PASSWORD(#{issueKey})
+			)
+		]]>
+	</insert>
+</mapper>

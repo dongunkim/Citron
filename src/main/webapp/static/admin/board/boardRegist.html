@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>게시판 등록</title>
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+<link href="../../../resources/css/citron.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="../../../resources/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/i18n/jquery-ui-i18n.min.js"></script>
+<script src="../../../resources/js/citron.js"></script>
+<script src="/js/jquery.uploadfile2.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+				
+	$("#upload").on("click", function(e) {
+		e.preventDefault();
+		uploadObj.startUpload();
+	});
+	
+	// SingleFile 설정 : maxFileCount = 1
+	// MultiFile 설정 : maxFileCount > 1
+	// dragDrop은 항상 true
+	var uploadObj = $("#fileuploader").uploadFile({
+		formName:"frm",
+		url:"/sample/insertBoard.json",	
+		uploadStr:"파일선택",
+		maxFileSize:10*1024*1024,				
+		maxFileCount:3,
+		showFileCounter:false,
+		showFileSize:true,
+		allowDuplicates:false,
+		onSuccess: function (data, message) {
+			console.log("data \t:\n" + JSON.stringify(data));
+			
+			return;
+			if (data.forward) document.location.href = data.forward;
+			else alert('처리중 오류가 발생했습니다.\n잠시 후 다시 시도하십시오.');
+			
+		},
+		onError: function (status, errMsg) {
+			console.log(status);
+			console.log(errMsg);
+			
+			alert('처리중 오류가 발생했습니다.\n잠시 후 다시 시도하십시오.');
+		}
+	});
+});
+</script>
+</head>
+
+<body>
+
+	<!-- TOP 영역 -->
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="../main/main.html">HOME</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-left">
+					<li class="active"><a href="../board/boardList.html">서비스</a></li>
+					<li><a href="../admin/adminList.html">시스템</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">김동언<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="../main/myPage.html">내 정보</a></li>
+							<li><a href="../main/changePassword.html">비밀번호 변경</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="../main/login.html">로그아웃</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<!-- Left 메뉴 -->
+			<div class="col-xs-2 sidebar">
+				<ul class="nav nav-sidebar">
+					<li class="active"><a href="../board/boardList.html">게시판</a></li>
+					<li><a href="../member/memberList.html">회원</a></li>
+				</ul>
+			</div>
+
+			<!-- 오른쪽 Content 영역 -->
+			<div class="col-xs-10 main">
+				<div class="container-fluid">
+					<!-- 페이지 타이틀 -->
+					<div class="row">
+						<h2 class="page-header">게시판 등록</h2>
+					</div>
+
+					<!-- 사이트 이동경로 -->
+					<div class="row">
+						<ol class="breadcrumb">
+							<li>Home</li>
+							<li>서비스</li>
+							<li class="active">게시판</li>
+						</ol>
+					</div>
+
+					<!-- 컨텐츠 영역 -->
+					<div class="row">
+						<table class="table table-bordered table-info">
+							<colgroup>
+								<col class="col-xs-2" />
+								<col class="col-xs-4" />
+								<col class="col-xs-2" />
+								<col class="col-xs-4" />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>제목<em class="fc-red">*</em></th>
+									<td colspan="3">
+										<div>
+											<input type="text" class="form-control">
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<th>내용<em class="fc-red">*</em></th>
+									<td colspan="3"><textarea class="form-control" rows="15"></textarea>
+									</td>
+								</tr>
+								<tr>
+									<th>첨부</th>
+									<td colspan="3">
+										<div id="fileuploader"></div>
+									</td>
+								</tr>
+								<tr>
+									<th>사용 여부</th>
+									<td colspan="3">
+										<div class="form-inline">
+											<select class="form-control">
+												<option value="">선택</option><!-- 선택 -->
+												<option value="Y">사용</option>
+												<option value="N">사용 안함</option>
+											</select>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- 버튼 영역 -->
+					<div class="row btn-group-area">
+						<div class="col-xs-6 text-left">
+							<a href="boardList.html" class="btn btn-info" role="button">목록</a>
+						</div>
+						<div class="col-xs-6 text-right">
+							<a href="#" class="btn btn-danger" role="button">저장</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<hr>
+			<p>Copyright &copy; 2019 dinens</p>
+		</div>
+	</footer>
+
+</body>
+</html>

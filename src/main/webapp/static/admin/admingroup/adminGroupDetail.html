@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>관리자 그룹 상세</title>
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+<link href="../../../resources/css/citron.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="../../../resources/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/i18n/jquery-ui-i18n.min.js"></script>
+<script src="../../../resources/js/citron.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<script>
+$(function () {
+	var resData = [ 
+		{ "id" : "root", "parent" : "#", "text" : "ROOT", "type":"default" },
+		{ "id" : "0001", "parent" : "root", "text" : "서비스", "type":"default" },
+		{ "id" : "0003", "parent" : "0001", "text" : "게시판", "type":"file" },
+		{ "id" : "0004", "parent" : "0001", "text" : "회원", "type":"file" },
+		{ "id" : "0002", "parent" : "root", "text" : "시스템", "type":"default" },
+		{ "id" : "0005", "parent" : "0002", "text" : "관리자", "type":"file" },
+		{ "id" : "0006", "parent" : "0002", "text" : "관리자 그룹", "type":"file" },
+		{ "id" : "0007", "parent" : "0002", "text" : "메뉴", "type":"file" },
+		{ "id" : "0008", "parent" : "0002", "text" : "코드", "type":"file" },
+		{ "id" : "9000", "parent" : "root", "text" : "테스트", "type":"default" },
+		{ "id" : "9001", "parent" : "9000", "text" : "테스트1-1", "type":"default" },
+		{ "id" : "9002", "parent" : "9001", "text" : "테스트2-1", "type":"file" }
+	];
+
+	$('#jstree_menu').jstree({
+    "plugins" : [ "json_data", "wholerow", "types", "checkbox"],
+    "core" : { 'data' : resData },
+    "types" : {
+			"default" : {
+				"valid_children" : ["default","file"]
+			},
+			"file" : {
+				"icon" : "glyphicon glyphicon-file",
+				"valid_children" : []
+			},
+			"types": {
+			    "disabled" : { 
+			          "check_node" : false, 
+			          "uncheck_node" : false 
+				} 
+			}
+		},
+		 "checkbox" : { "two_state" : true },
+	})
+	.bind("ready.jstree", function (event, data) {
+	     $(this).jstree("open_all");
+	});
+
+
+	$('#jstree_menu2').jstree({
+	    "plugins" : [ "json_data", "wholerow", "types"],
+	    "core" : { 'data' : resData },
+	    "types" : {
+			"default" : {
+				"valid_children" : ["default","file"]
+			},
+			"file" : {
+				"icon" : "glyphicon glyphicon-file",
+				"valid_children" : []
+			}
+		}
+	})
+	.bind("ready.jstree", function (event, data) {
+	     $(this).jstree("open_all");
+	});
+
+});
+</script>
+</head>
+
+<body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="../main/main.html">HOME</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-left">
+					<li><a href="../board/boardList.html">서비스</a></li>
+					<li class="active"><a href="../admin/adminList.html">시스템</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">김동언<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="../main/myPage.html">내 정보</a></li>
+							<li><a href="../main/changePassword.htmls">비밀번호 변경</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="../main/login.html">로그아웃</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<!-- Left 메뉴 -->
+			<div class="col-xs-2 sidebar">
+				<ul class="nav nav-sidebar">
+					<li><a href="../admin/adminList.html">관리자</a></li>
+					<li class="active"><a href="../admingroup/adminGroupList.html">관리자
+							그룹</a></li>
+					<li><a href="../menu/menuList.html">메뉴</a></li>
+					<li><a href="../code/codeList.html">코드</a></li>
+				</ul>
+			</div>
+
+			<!-- 오른쪽 Content 영역 -->
+			<div class="col-xs-10 main">
+				<div class="container-fluid">
+					<!-- 페이지 타이틀 -->
+					<div class="row">
+						<h2 class="page-header">관리자 그룹 상세</h2>
+					</div>
+
+					<!-- 사이트 이동경로 -->
+					<div class="row">
+						<ol class="breadcrumb">
+							<li>Home</li>
+							<li>시스템</li>
+							<li class="active">관리자</li>
+						</ol>
+					</div>
+
+					<!-- 컨텐츠 영역 -->
+					<div class="row">
+						<p class="sub-item-header">관리자 그룹</p>
+						<table class="table table-bordered table-info">
+							<colgroup>
+								<col class="col-xs-2" />
+								<col class="col-xs-4" />
+								<col class="col-xs-2" />
+								<col class="col-xs-4" />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>ID</th>
+									<td>0000</td>
+									<th>이름</th>
+									<td>시스템 관리자</td>
+								</tr>
+								<tr>
+									<th>사용 여부</th>
+									<td colspan="3">사용</td>
+								</tr>
+								<tr>
+									<th>등록 정보</th>
+									<td>2019-08-05 17:15 ( admin )</td>
+									<th>수정 정보</th>
+									<td>2019-08-05 17:15 ( admin )</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="row">
+						<div class="col-sm-6 menu-tree-left">
+							<p class="sub-item-header">전체 메뉴</p>
+							<div class="menu-tree mh-320">
+								<div class="tree-body" id="jstree_menu"></div>
+							</div>
+						</div>
+						<div class="col-sm-6 menu-tree-right">
+							<p class="sub-item-header">선택된 메뉴</p>
+							<div class="menu-tree mh-320">
+								<div class="tree-body" id="jstree_menu2"></div>
+							</div>
+						</div>
+					</div>
+
+
+					<!-- 버튼 영역 -->
+					<div class="row btn-group-area">
+						<div class="col-xs-6 text-left">
+							<a href="adminGroupList.html" class="btn btn-info" role="button">목록</a>
+						</div>
+						<div class="col-xs-6 text-right">
+							<a href="#" class="btn btn-warning" role="button">삭제</a> <a
+								href="adminGroupModify.html" class="btn btn-danger"
+								role="button">수정</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<hr>
+			<p>Copyright &copy; 2019 dinens</p>
+		</div>
+	</footer>
+
+</body>
+</html>

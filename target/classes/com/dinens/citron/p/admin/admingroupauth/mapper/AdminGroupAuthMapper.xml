@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.admingroupauth.mapper.AdminGroupAuthMapper">
+
+	<select id="selectAdminGroupAuthList" resultType="com.dinens.citron.p.admin.admingroupauth.domain.InitAdminGroupAuthVO">
+		SELECT	/* AdminGroupAuthMapper.selectAdminGroupAuthList */
+				X.ADMIN_GROUP_ID,
+				Y.LOCALE_CODE,
+				X.MENU_ID
+		FROM	T_ADMIN_GROUP_AUTH X,
+				(
+					SELECT	X.MENU_ID, /* 1 Depth 메뉴 */
+							Y.LOCALE_CODE,
+							RPAD(X.DISPLAY_ORDER,9,'0') SORT_ORDER
+					FROM	T_MENU X, T_MENU_LOCALE Y
+					WHERE	DEPTH = 1
+					  AND	USE_YN = 'Y'
+					  AND	X.MENU_ID = Y.MENU_ID
+					UNION ALL
+					SELECT	X.MENU_ID, /* 2 Depth 메뉴 */
+							Z.LOCALE_CODE,
+							CONCAT(RPAD(Y.DISPLAY_ORDER,3,'0'),RPAD(X.DISPLAY_ORDER,6,'0')) SORT_ORDER
+					FROM	T_MENU X, T_MENU Y, T_MENU_LOCALE Z
+					WHERE	X.DEPTH = 2
+					  AND	X.USE_YN = 'Y'
+					  AND	X.UPPER_MENU_ID = Y.MENU_ID
+					  AND	Y.USE_YN = 'Y'
+					  AND	X.MENU_ID = Z.MENU_ID
+					UNION ALL
+					SELECT	X.MENU_ID, /* 3 Depth 메뉴 */
+							A.LOCALE_CODE,
+							CONCAT(RPAD(Z.DISPLAY_ORDER,3,'0'),RPAD(Y.DISPLAY_ORDER,3,'0'),RPAD(X.DISPLAY_ORDER,3,'0')) SORT_ORDER
+					FROM	T_MENU X, T_MENU Y, T_MENU Z, T_MENU_LOCALE A
+					WHERE	X.DEPTH = 3
+					  AND	X.USE_YN = 'Y'
+					  AND	X.UPPER_MENU_ID = Y.MENU_ID
+					  AND	Y.USE_YN = 'Y'
+					  AND	Y.UPPER_MENU_ID = Z.MENU_ID
+					  AND	Z.USE_YN = 'Y'
+					  AND	X.MENU_ID = A.MENU_ID
+				) Y
+		WHERE	X.MENU_ID = Y.MENU_ID
+		ORDER BY ADMIN_GROUP_ID, LOCALE_CODE, SORT_ORDER
+	</select>
+
+	<!-- Menu Tree 목록 조회 -->
+	<select id="selectMenuAuthTree" parameterType="com.dinens.citron.p.admin.admingroupauth.domain.AdminGroupAuthVO" resultType="com.dinens.citron.p.admin.menu.domain.MenuTreeVO">
+		SELECT	/* AdminGroupAuthMapper.selectMenuAuthTree */
+				X.ID,
+				X.PARENT,
+				X.TEXT,
+				X.TYPE,
+				IF(Y.ID IS NULL,'N','Y') DATA
+		FROM	(
+					SELECT	'root' ID,
+							'#' PARENT,
+							'ROOT' TEXT,
+							'default' TYPE
+					UNION ALL
+					SELECT	MENU_ID,
+							UPPER_MENU_ID,
+							MENU_NAME,
+							IF(DEPTH !=1 AND SCREEN_LINK_YN='Y','leaf','default')
+					FROM	T_MENU
+				) X LEFT OUTER JOIN
+				(
+					SELECT	MENU_ID ID
+					FROM	T_ADMIN_GROUP_AUTH
+					WHERE	ADMIN_GROUP_ID = #{adminGroupId}
+				) Y
+		   ON	X.ID = Y.ID
+	</select>
+
+	<insert id="insertAdminGroupAuth" parameterType="com.dinens.citron.p.admin.admingroupauth.domain.AdminGroupAuthVO">
+		INSERT INTO /* AdminGroupAuthMapper.insertAdminGroupAuth */ T_ADMIN_GROUP_AUTH
+		(
+			ADMIN_GROUP_ID,
+			MENU_ID,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{adminGroupId},
+			#{menuId},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<delete id="deleteAdminGroupAuth" parameterType="com.dinens.citron.p.admin.menu.domain.MenuVO">
+		DELETE FROM /* AdminGroupAuthMapper.deleteAdminGroupAuth */ T_ADMIN_GROUP_AUTH
+		WHERE
+			ADMIN_GROUP_ID = #{adminGroupId}
+	</delete>
+
+</mapper>

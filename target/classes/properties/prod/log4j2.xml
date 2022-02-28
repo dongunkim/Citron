@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+	<Appenders>
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d %-5p [%c.%M] - %m\n"/>
+		</Console>
+      
+		<RollingFile name="logfile" fileName="${sys:LOG_DIR}/log4j.log"
+											filePattern="${sys:LOG_DIR}/log4j.%d{yyyy-MM-dd}-%i.log.gz">                     
+			<PatternLayout pattern="%d %-5p [%c.%M] - %m\n"/>
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+				<SizeBasedTriggeringPolicy size="10 MB"/>
+			</Policies>
+		</RollingFile>
+	</Appenders>
+
+	<Loggers>
+		<!-- Application Loggers -->	
+		<Logger name="com.dinens.citron.p.admin" level="DEBUG" additivity="false">
+			<AppenderRef ref="logfile" />
+		</Logger>
+			 
+		<!-- JDBC Loggers (SQL, Resultsettable 등) -->
+		<!-- Mysql에서는 제대로 동작하지 않음 -->
+		<Logger name="jdbc.sqlonly" level="INFO" additivity="false">			
+			<AppenderRef ref="logfile" />
+		</Logger>	
+		<Logger name="jdbc.resultsettable" level="INFO" additivity="false">
+			<AppenderRef ref="logfile" />
+		</Logger>		
+		 
+		<!-- Root Logger -->
+		<Root level="WARN">
+			<AppenderRef ref="logfile" />
+		</Root>
+	</Loggers>
+</Configuration>

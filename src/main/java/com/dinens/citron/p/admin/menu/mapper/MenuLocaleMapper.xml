@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.menu.mapper.MenuLocaleMapper">
+	<select id="selectMenuLocaleList" resultType="com.dinens.citron.p.admin.menu.domain.MenuLocaleVO">
+		SELECT	/* MenuLocaleMapper.selectMenuLocaleList */
+				MENU_ID,
+				LOCALE_CODE,
+				MENU_NAME,
+				DISPLAY_ORDER,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME
+		FROM	T_MENU_LOCALE
+		WHERE	MENU_ID = #{menuId}
+		ORDER BY DISPLAY_ORDER
+	</select>
+
+	<insert id="insertMenuLocale" parameterType="com.dinens.citron.p.admin.menu.domain.MenuLocaleVO">
+		INSERT INTO /* MenuLocaleMapper.insertMenuLocale */ T_MENU_LOCALE
+		(
+			MENU_ID,
+			LOCALE_CODE,
+			MENU_NAME,
+			DISPLAY_ORDER,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{menuId},
+			#{localeCode},
+			#{menuName},
+			#{displayOrder},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<delete id="deleteMenuLocale" parameterType="com.dinens.citron.p.admin.menu.domain.MenuLocaleVO">
+		DELETE FROM /* MenuLocaleMapper.deleteMenuLocale */ T_MENU_LOCALE
+		WHERE MENU_ID = #{menuId}
+	</delete>
+
+</mapper>

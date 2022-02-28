@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.menu.mapper.MenuMapper">
+	<select id="selectAuthMenuList" resultType="com.dinens.citron.p.admin.menu.domain.InitMenuVO">
+		SELECT	/* MenuMapper.selectAuthMenuList */
+				B.ADMIN_GROUP_ID,
+				A.LOCALE_CODE,
+				A.MENU_ID,
+				A.MENU_NAME,
+				A.UPPER_MENU_ID,
+				A.UPPER_MENU_NAME,
+				A.TOP_MENU_ID,
+				A.TOP_MENU_NAME,
+				A.SCREEN_LINK_YN,
+				A.SCREEN_URI,
+				A.DEPTH,
+				A.SORT_ORDER
+		FROM	(
+			SELECT	A.MENU_ID, /* 1 Depth 메뉴 */
+					B.LOCALE_CODE,
+					B.MENU_NAME,
+					UPPER_MENU_ID,
+					NULL UPPER_MENU_NAME,
+			        A.MENU_ID TOP_MENU_ID,
+			        B.MENU_NAME TOP_MENU_NAME,
+					SCREEN_LINK_YN,
+					SCREEN_URI,
+					DEPTH,
+					RPAD(A.DISPLAY_ORDER,9,'0') SORT_ORDER
+			FROM	T_MENU A, T_MENU_LOCALE B
+			WHERE	DEPTH = 1
+			  AND	USE_YN = 'Y'
+			  AND	A.MENU_ID = B.MENU_ID
+			UNION ALL
+			SELECT	X.MENU_ID, /* 2 Depth 메뉴 */
+					Z.LOCALE_CODE,
+					Z.MENU_NAME,
+					Y.MENU_ID,
+			        Y.MENU_NAME UPPER_MENU_NAME,
+			        Y.MENU_ID TOP_MENU_ID,
+			        Y.MENU_NAME TOP_MENU_NAME,
+					X.SCREEN_LINK_YN,
+					X.SCREEN_URI,
+					X.DEPTH,
+					CONCAT(RPAD(Y.DISPLAY_ORDER,3,'0'),RPAD(X.DISPLAY_ORDER,6,'0')) SORT_ORDER
+			FROM	T_MENU X, T_MENU Y, T_MENU_LOCALE Z
+			WHERE	X.DEPTH = 2
+			  AND	X.USE_YN = 'Y'
+			  AND	X.UPPER_MENU_ID = Y.MENU_ID
+			  AND	Y.USE_YN = 'Y'
+			  AND	X.MENU_ID = Z.MENU_ID
+			UNION ALL
+			SELECT	X.MENU_ID, /* 3 Depth 메뉴 */
+					A.LOCALE_CODE,
+					A.MENU_NAME,
+					Y.MENU_ID,
+			        Y.MENU_NAME UPPER_MENU_NAME,
+			        Z.MENU_ID TOP_MENU_ID,
+			        Z.MENU_NAME TOP_MENU_NAME,
+					X.SCREEN_LINK_YN,
+					X.SCREEN_URI,
+					X.DEPTH,
+					CONCAT(RPAD(Z.DISPLAY_ORDER,3,'0'),RPAD(Y.DISPLAY_ORDER,3,'0'),RPAD(X.DISPLAY_ORDER,3,'0')) SORT_ORDER
+			FROM	T_MENU X, T_MENU Y, T_MENU Z, T_MENU_LOCALE A
+			WHERE	X.DEPTH = 3
+			  AND	X.USE_YN = 'Y'
+			  AND	X.UPPER_MENU_ID = Y.MENU_ID
+			  AND	Y.USE_YN = 'Y'
+			  AND	Y.UPPER_MENU_ID = Z.MENU_ID
+			  AND	Z.USE_YN = 'Y'
+			  AND	X.MENU_ID = A.MENU_ID
+			) A, T_ADMIN_GROUP_AUTH B
+		WHERE	A.MENU_ID = B.MENU_ID
+		  AND	B.ADMIN_GROUP_ID LIKE CONCAT('%', #{adminGroupId}, '%')
+		ORDER BY ADMIN_GROUP_ID,LOCALE_CODE,SORT_ORDER
+	</select>
+
+	<!-- 사용자 권한 Top Menu 목록 조회 -->
+	<select id="selectAuthTopMenuList" resultType="com.dinens.citron.p.admin.menu.domain.MenuVO">
+		SELECT	/* MenuMapper.selectAuthTopMenuList */
+				Z.MENU_ID,
+				MENU_NAME,
+				UPPER_MENU_ID,
+				SCREEN_LINK_YN,
+				SCREEN_URI,
+				DEPTH
+		FROM	T_ADMIN X, T_ADMIN_GROUP_AUTH Y, T_MENU Z
+		WHERE	X.ADMIN_ID = #{adminId}
+		  AND	X.ADMIN_GROUP_ID = Y.ADMIN_GROUP_ID
+		  AND	Y.MENU_ID = Z.MENU_ID
+             AND	DEPTH = 1
+		  AND	Z.USE_YN = 'Y'
+		ORDER BY DISPLAY_ORDER
+	</select>
+
+	<!-- Top메뉴에 해당하는 사용자 권한 Sub(Left) Menu 목록 조회 -->
+	<select id="selectAuthSubMenuList" resultType="com.dinens.citron.p.admin.menu.domain.MenuVO">
+		SELECT	/* MenuMapper.selectAuthSubMenuList */
+				Z.*
+		FROM	T_ADMIN X, T_ADMIN_GROUP_AUTH Y,
+				(
+					SELECT	X.MENU_ID, /* 2 Depth 메뉴 */
+							X.MENU_NAME,
+							Y.MENU_ID UPPER_MENU_ID,
+							Y.MENU_NAME UPPER_MENU_NAME,
+							Y.MENU_ID TOP_MENU_ID,
+							Y.MENU_NAME TOP_MENU_NAME,
+							X.SCREEN_LINK_YN,
+							X.SCREEN_URI,
+							X.DEPTH,
+							CONCAT(RPAD(Y.DISPLAY_ORDER,3,'0'),RPAD(X.DISPLAY_ORDER,6,'0')) SORT_ORDER
+					FROM	T_MENU X, T_MENU Y
+					WHERE	X.DEPTH = 2
+					  AND	X.USE_YN = 'Y'
+					  AND	X.UPPER_MENU_ID = Y.MENU_ID
+					  AND	Y.USE_YN = 'Y'
+					  AND	Y.MENU_ID = #{topMenuId}
+					UNION ALL
+					SELECT	X.MENU_ID, /* 3 Depth 메뉴 */
+							X.MENU_NAME,
+							Y.MENU_ID,
+							Y.MENU_NAME UPPER_MENU_NAME,
+							Z.MENU_ID TOP_MENU_ID,
+							Z.MENU_NAME TOP_MENU_NAME,
+							X.SCREEN_LINK_YN,
+							X.SCREEN_URI,
+							X.DEPTH,
+							CONCAT(RPAD(Z.DISPLAY_ORDER,3,'0'),RPAD(Y.DISPLAY_ORDER,3,'0'),RPAD(X.DISPLAY_ORDER,3,'0')) SORT_ORDER
+					FROM	T_MENU X, T_MENU Y, T_MENU Z
+					WHERE	X.DEPTH = 3
+					  AND	X.USE_YN = 'Y'
+					  AND	X.UPPER_MENU_ID = Y.MENU_ID
+					  AND	Y.USE_YN = 'Y'
+					  AND	Y.UPPER_MENU_ID = Z.MENU_ID
+					  AND	Z.USE_YN = 'Y'
+					  AND	Z.MENU_ID = #{topMenuId}
+				) Z
+		WHERE	X.ADMIN_ID = #{adminId}
+		  AND	X.ADMIN_GROUP_ID = Y.ADMIN_GROUP_ID
+		  AND	Y.MENU_ID = Z.MENU_ID
+		ORDER BY SORT_ORDER
+	</select>
+	
+	<!-- Menu Tree 목록 조회 -->
+	<select id="selectMenuTree" parameterType="com.dinens.citron.p.admin.menu.domain.MenuVO" resultType="com.dinens.citron.p.admin.menu.domain.MenuTreeVO">
+		SELECT	/* MenuMapper.selectMenuTree */
+				'root' ID,
+				'#' PARENT,
+				'ROOT' TEXT,
+				'default' TYPE
+		UNION ALL
+		SELECT	MENU_ID,
+				UPPER_MENU_ID,
+				MENU_NAME,
+				IF(DEPTH !=1 AND SCREEN_LINK_YN='Y','leaf','default')
+		FROM	T_MENU
+		WHERE	1 = 1
+	</select>
+
+	<!-- Menu Tree 목록 조회 -->
+	<select id="selectMenuDetail" parameterType="com.dinens.citron.p.admin.menu.domain.MenuVO" resultType="com.dinens.citron.p.admin.menu.domain.MenuVO">
+		SELECT	/* MenuMapper.selectMenuDetail */
+				MENU_ID,
+				MENU_NAME,
+				UPPER_MENU_ID,
+				(SELECT MENU_NAME FROM T_MENU WHERE MENU_ID = A.UPPER_MENU_ID) UPPER_MENU_NAME,
+				SCREEN_LINK_YN,
+				SCREEN_URI,
+				DEPTH,
+				DISPLAY_ORDER,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_MENU A
+		WHERE	MENU_ID = #{menuId}
+	</select>
+
+	<select id="selectDisplayOrderCount" parameterType="com.dinens.citron.p.admin.menu.domain.MenuVO" resultType="int">
+		SELECT	/* MenuMapper.selectDisplayOrderCount */
+				COUNT(*)
+		FROM	T_MENU
+		WHERE	UPPER_MENU_ID = #{menuVO.upperMenuId}
+		  AND	DISPLAY_ORDER = #{menuVO.displayOrder}
+		<if test='menuVO.menuId != null and menuVO.menuId != ""'>
+		  AND	MENU_ID != #{menuVO.menuId}
+		</if>	
+	</select>
+
+	<insert id="insertMenu" parameterType="com.dinens.citron.p.admin.menu.domain.MenuVO">
+		INSERT INTO /* MenuMapper.insertMenu */ T_MENU
+		(
+			MENU_ID,
+			MENU_NAME,
+			UPPER_MENU_ID,
+			SCREEN_LINK_YN,
+			SCREEN_URI,
+			DEPTH,
+			DISPLAY_ORDER,
+			USE_YN,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{menuId},
+			#{menuName},
+			#{upperMenuId},
+			#{screenLinkYn},
+			#{screenUri},
+			#{depth},
+			#{displayOrder},
+			#{useYn},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<update id="updateMenu" parameterType="com.dinens.citron.p.admin.menu.domain.MenuVO">
+		UPDATE /* MenuMapper.updateMenu */ T_MENU
+		SET
+			MENU_NAME = #{menuName},
+			SCREEN_LINK_YN = #{screenLinkYn},
+			SCREEN_URI = #{screenUri},
+			DISPLAY_ORDER = #{displayOrder},
+			USE_YN = #{useYn},
+			UPDATE_ID = #{updateId},
+			UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE
+			MENU_ID = #{menuId}
+	</update>
+
+	<delete id="deleteMenu" parameterType="com.dinens.citron.p.admin.menu.domain.MenuVO">
+		DELETE FROM /* MenuMapper.deleteMenu */ T_MENU
+		WHERE
+			MENU_ID = #{menuId}
+	</delete>
+
+</mapper>

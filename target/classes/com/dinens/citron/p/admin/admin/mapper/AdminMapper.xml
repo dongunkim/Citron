@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.admin.mapper.AdminMapper">
+
+	<sql id="sqlWhereAdminList">
+		<if test='adminVO.condAdminGroupId != null and adminVO.condAdminGroupId != ""'>
+		  AND	ADMIN_GROUP_ID = #{adminVO.condAdminGroupId}
+		</if>
+	<choose>						
+	  <when test='adminVO.condSearchType == "id"'>
+		<if test='adminVO.condSearchStr != null and adminVO.condSearchStr != ""'>
+		  AND	ADMIN_ID LIKE CONCAT('%', #{adminVO.condSearchStr}, '%')
+		</if>
+	  </when>
+	  <when test='adminVO.condSearchType == "name"'>
+		<if test='adminVO.condSearchStr != null and adminVO.condSearchStr != ""'>
+		  AND	ADMIN_NAME LIKE CONCAT('%', #{adminVO.condSearchStr}, '%')
+		</if>
+	  </when>
+	  </choose>
+	</sql>
+	
+	<!--  -->
+	<select id="selectAdminListCount" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO" resultType="int">
+		SELECT	/* AdminMapper.selectAdminListCount */
+				COUNT(*)
+		FROM	T_ADMIN A
+		WHERE	1 = 1
+		<include refid="sqlWhereAdminList"/>
+	</select>
+
+	<!--  -->
+	<select id="selectAdminList" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO" resultType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		SELECT	/* AdminMapper.selectAdminList */
+				ADMIN_ID,
+				ADMIN_NAME,
+				ADMIN_GROUP_ID,
+				(SELECT ADMIN_GROUP_NAME FROM T_ADMIN_GROUP WHERE ADMIN_GROUP_ID = A.ADMIN_GROUP_ID) ADMIN_GROUP_NAME,
+				PASSWORD,
+				PASSWORD_SALT,
+				PASSWORD_UPDATE_TIME,
+				PHONE_NUMBER,
+				EMAIL,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_ADMIN A
+		WHERE	1 = 1
+		<include refid="sqlWhereAdminList"/>
+		ORDER BY ADMIN_ID
+		<if test='pagingVO != null and pagingVO.countPerPage != 0'>
+		LIMIT	#{pagingVO.startNum}, #{pagingVO.countPerPage}
+		</if>
+	</select>
+
+	<!--  -->
+	<select id="selectAdminListExcel" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO" resultType="hashmap">
+		SELECT	/* AdminMapper.selectAdminListExcel */
+				ADMIN_ID,
+				ADMIN_NAME,
+				ADMIN_GROUP_ID,
+				(SELECT ADMIN_GROUP_NAME FROM T_ADMIN_GROUP WHERE ADMIN_GROUP_ID = A.ADMIN_GROUP_ID) ADMIN_GROUP_NAME,
+				PASSWORD,
+				PASSWORD_SALT,
+				PASSWORD_UPDATE_TIME,
+				PHONE_NUMBER,
+				EMAIL,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_ADMIN A
+		WHERE	1 = 1
+		<include refid="sqlWhereAdminList"/>
+	</select>
+
+	<select id="selectAdminDetail" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO" resultType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		SELECT	/* AdminMapper.selectAdminDetail */
+				ADMIN_ID,
+				ADMIN_NAME,
+				ADMIN_GROUP_ID,
+				(SELECT ADMIN_GROUP_NAME FROM T_ADMIN_GROUP WHERE ADMIN_GROUP_ID = A.ADMIN_GROUP_ID) ADMIN_GROUP_NAME,
+				PASSWORD,
+				PASSWORD_SALT,
+				PASSWORD_UPDATE_TIME,
+				PHONE_NUMBER,
+				EMAIL,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_ADMIN A
+		WHERE	ADMIN_ID = #{adminId}
+	</select>
+
+	<insert id="insertAdmin" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		INSERT INTO /* AdminMapper.insertAdmin */ T_ADMIN
+		(
+			ADMIN_ID,
+			ADMIN_GROUP_ID,
+			PASSWORD,
+			PASSWORD_SALT,
+			PASSWORD_UPDATE_TIME,			
+			ADMIN_NAME,
+			PHONE_NUMBER,
+			EMAIL,
+			USE_YN,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{adminId},
+			#{adminGroupId},
+			PASSWORD(CONCAT(#{passwordSalt}, #{password})),
+			#{passwordSalt},
+			CURRENT_TIMESTAMP,
+			#{adminName},
+			#{phoneNumber},
+			#{email},
+			#{useYn},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<update id="updateAdmin" parameterType="com.dinens.citron.p.admin.admin.domain.AdminVO">
+		UPDATE /* AdminMapper.updateAdmin */ T_ADMIN
+		SET
+			ADMIN_GROUP_ID = #{adminGroupId},
+			ADMIN_NAME = #{adminName},
+			PHONE_NUMBER = #{phoneNumber},
+			EMAIL = #{email},
+			USE_YN = #{useYn},
+			UPDATE_ID = #{updateId},
+			UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE
+			ADMIN_ID = #{adminId}
+	</update>
+	
+	<update id="updateAdminPassword" parameterType="com.dinens.citron.p.admin.sample.domain.Admin">
+		UPDATE /* AdminMapper.updateAdmin */T_ADMIN
+		SET
+			PASSWORD = PASSWORD(CONCAT(#{passwordSalt}, #{password})),
+			PASSWORD_SALT = #{passwordSalt},				
+			UPDATE_ID = #{updateId},
+			UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE
+			ADMIN_ID = #{adminId}	
+	</update>
+		
+	<delete id="deleteAdmin" parameterType="com.dinens.citron.p.admin.sample.domain.Admin">
+		DELETE FROM /* AdminMapper.deleteAdmin */ T_ADMIN
+		WHERE
+			ADMIN_ID = #{adminId}
+	</delete>
+</mapper>

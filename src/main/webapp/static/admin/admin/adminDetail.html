@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+<title>관리자 상세</title>
+<link href="../../../resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet">
+<link href="../../../resources/css/citron.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="../../../resources/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/i18n/jquery-ui-i18n.min.js"></script>
+<script src="../../../resources/js/citron.js"></script>
+</head>
+
+<body>
+
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="../main/main.html">HOME</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-left">
+					<li><a href="../board/boardList.html">서비스</a></li>
+					<li class="active"><a href="../admin/adminList.html">시스템</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false">김동언<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="../main/myPage.html">내 정보</a></li>
+							<li><a href="../main/changePassword.html">비밀번호 변경</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="../main/login.html">로그아웃</a></li>
+						</ul></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		<div class="row">
+			<!-- Left 메뉴 -->
+			<div class="col-xs-2 sidebar">
+				<ul class="nav nav-sidebar">
+					<li class="active"><a href="../admin/adminList.html">관리자</a></li>
+					<li><a href="../admingroup/adminGroupList.html">관리자 그룹</a></li>
+					<li><a href="../menu/menuList.html">메뉴</a></li>
+					<li><a href="../code/codeList.html">코드</a></li>
+				</ul>
+			</div>
+
+			<!-- 오른쪽 Content 영역 -->
+			<div class="col-xs-10 main">
+				<div class="container-fluid">
+					<!-- 페이지 타이틀 -->
+					<div class="row">
+						<h2 class="page-header">관리자 상세</h2>
+					</div>
+
+					<!-- 사이트 이동경로 -->
+					<div class="row">
+						<ol class="breadcrumb">
+							<li>Home</li>
+							<li>시스템</li>
+							<li class="active">관리자</li>
+						</ol>
+					</div>
+
+					<!-- 컨텐츠 영역 -->
+					<div class="row">
+						<table class="table table-bordered table-info">
+							<colgroup>
+								<col class="col-xs-2" />
+								<col class="col-xs-4" />
+								<col class="col-xs-2" />
+								<col class="col-xs-4" />
+							</colgroup>
+							<tbody>
+								<tr>
+									<th>ID</th>
+									<td colspan="3">gildong-hong</td>
+								</tr>
+								<tr>
+									<th>이름</th>
+									<td>홍길동</td>
+									<th>관리자 그룹</th>
+									<td>시스템 관리자</td>
+								</tr>
+								<tr>
+									<th>전화 번호</th>
+									<td>010-9999-9999</td>
+									<th>이메일</th>
+									<td>gildong-hong@gmail.com</td>
+								</tr>
+								<tr>
+									<th>사용 여부</th>
+									<td colspan="3">사용</td>
+								</tr>
+								<tr>
+									<th>등록자 ID</th>
+									<td>admin</td>
+									<th>등록 시간</th>
+									<td>2019-08-05 17:15</td>
+								</tr>
+								<tr>
+									<th>수정자 ID</th>
+									<td>admin</td>
+									<th>수정 시간</th>
+									<td>2019-08-05 17:15</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- 버튼 영역 -->
+					<div class="row btn-group-area">
+						<div class="col-xs-6 text-left">
+							<a href="adminList.html" class="btn btn-info" role="button">목록</a>
+						</div>
+						<div class="col-xs-6 text-right">
+							<a href="#" class="btn btn-warning" role="button">삭제</a> <a
+								href="adminModify.html" class="btn btn-danger" role="button">수정</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container">
+			<hr>
+			<p>Copyright &copy; 2019 dinens</p>
+		</div>
+	</footer>
+
+</body>
+</html>

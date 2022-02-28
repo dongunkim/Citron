@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	
+	<!-- ================== Component Scan 설정 ================== -->
+	<!-- Servlet Context에서는 Controller만 스캔 -->
+	<context:component-scan base-package="com.dinens.citron.p.admin" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	
+	<!-- ================== Property Placeholder 설정 ================== -->
+	<!-- Servlet에서 @Value Annotation을 사용하기 위해 추가 설정-->
+	<context:property-placeholder location="classpath:properties/${RUN_MODE}/*.properties"/>
+		
+	<mvc:annotation-driven/>
+	
+	<!-- ================== Default Servlet 핸들러 설정 ================== -->
+	<!-- Dispatcher에서 처리하지 못한 Resource 파일(*.css 등)들을 WAS가 제공하는 Default Servlet에서 처리 -->
+	<mvc:default-servlet-handler />
+	
+	
+	<!-- ================== Interceptor 설정 ================== -->
+	<!-- 아래 순서로 적용됨 -->
+	<mvc:interceptors>
+		<!-- Locale Interceptor -->
+		<!-- URL 뒤에 ?lang=ko or ?lang=en으로 요청이 들어올 경우 Intercept -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/resources/**" />
+			<mvc:exclude-mapping path="/images/**" />
+			<mvc:exclude-mapping path="/css/**" />
+			<mvc:exclude-mapping path="/js/**" />	
+			<mvc:exclude-mapping path="/font/**" />	
+			<mvc:exclude-mapping path="/**/*.ico" />			
+			<mvc:exclude-mapping path="/lib/**" />
+			<mvc:exclude-mapping path="/i18n/**" />			
+    		<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">    		
+    			<property name="paramName" value="lang"/>
+    		</bean>
+    	</mvc:interceptor>
+    	
+    	<!-- Logging Custom Interceptor -->
+		<!-- Image나 css 같은 resource 파일은 제외하고 Servlet만 Intercept 하도록 -->	
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />			
+			<mvc:exclude-mapping path="/resources/**" />
+			<mvc:exclude-mapping path="/images/**" />
+			<mvc:exclude-mapping path="/css/**" />
+			<mvc:exclude-mapping path="/js/**" />	
+			<mvc:exclude-mapping path="/font/**" />	
+			<mvc:exclude-mapping path="/**/*.ico" />
+			<mvc:exclude-mapping path="/lib/**" />
+			<mvc:exclude-mapping path="/i18n/**" />		
+			<bean id="loggerInterceptor" class="com.dinens.citron.p.admin.common.interceptor.LoggerInterceptor"></bean>
+		</mvc:interceptor>
+		
+    	<!-- Session Interceptor -->		
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/resources/**" />
+			<mvc:exclude-mapping path="/images/**" />
+			<mvc:exclude-mapping path="/css/**" />
+			<mvc:exclude-mapping path="/js/**" />
+			<mvc:exclude-mapping path="/font/**" />
+			<mvc:exclude-mapping path="/**/*.ico" />			
+			<mvc:exclude-mapping path="/**/error/**" />
+			<mvc:exclude-mapping path="/static/**" />
+			<mvc:exclude-mapping path="/lib/**" />
+			<mvc:exclude-mapping path="/i18n/**" />
+			<bean id="authInterceptor" class="com.dinens.citron.p.admin.common.interceptor.AuthInterceptor">
+				<property name="noSession">
+	                <list>
+	                	<value>/sample/openAccountRegister</value>
+	                	<value>/sample/insertAccount</value>
+	                	<value>/sample/encInsertAccount</value>
+	                	<value>/sample/openLogin</value>
+	                	<value>/main/login.json</value>
+	                	<value>/main/loginEncrypt.json</value>
+	                	<value>/main/logout.json</value>
+	                	<value>/common/getPubKey.json</value>
+	                	<value>/sample/openMailSend</value>	                	
+	                	<value>/main/login</value>
+	                	<value>/main/findPasswd</value>
+	                	<value>/main/ajaxFindPasswd.json</value>
+	                	<value>/main/ajaxSendPassMail.json</value>
+	                </list>
+                </property>
+            	<property name="redirectPage">
+                	<value>/</value>
+            	</property>
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>	
+	
+	
+	<!-- ================== AOP 설정 ================== -->
+	<!-- AOP를 logger에 적용(Request 처리 과정의 process logging) -->
+	<!-- Servlet과 Root Context에 각각 설정 -->
+	<aop:aspectj-autoproxy/>
+	<bean id="loggerAspect" class="com.dinens.citron.p.admin.common.aspect.LoggerAspect"/>	
+	
+	
+	<!-- ================== Tiles 설정 ==================-->
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer" >
+		<property name="definitions">
+			<value>classpath:/tiles/tiles.xml</value>
+		</property>
+	</bean>
+	
+	<!-- JsonView 설정(Exception 처리에서 사용) -->
+	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+    	<property name="contentType" value="application/json;charset=UTF-8"> </property>
+	</bean>
+	
+	<!-- ================== ViewResolver 설정 ==================-->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="0" />
+	</bean>	
+		
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">		
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles3.TilesView"/>
+		<property name="order" value="1" />
+	</bean>
+	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="order" value="2" />		
+		<property name="prefix" value="/WEB-INF/views/" />
+		<property name="suffix" value=".jsp" />
+	</bean>	
+	
+	<!-- ================== Static Resource Mapping ================== -->
+	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/css/**" location="/resources/css/" />
+	<mvc:resources mapping="/images/**" location="/resources/images/" />
+	<mvc:resources mapping="/js/**" location="/resources/js/" />
+	<mvc:resources mapping="/lib/**" location="/resources/lib/" />
+	<mvc:resources mapping="/font/**" location="/resources/font/" />
+	<mvc:resources mapping="/i18n/**" location="/WEB-INF/classes/messages/" />	
+	<mvc:resources mapping="/static/**" location="/static/" />	
+	
+</beans>

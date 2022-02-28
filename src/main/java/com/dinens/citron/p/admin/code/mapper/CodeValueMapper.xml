@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.dinens.citron.p.admin.code.mapper.CodeValueMapper">
+
+	<select id="selectCodeValueList" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueVO" resultType="com.dinens.citron.p.admin.code.domain.CodeValueVO">
+		SELECT	/* CodeValueMapper.selectCodeValueList */
+				CODE_ID,
+				VALUE,
+				NAME,
+				DISPLAY_ORDER,
+				DESCRIPTION,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_CODE_VALUE
+		WHERE	CODE_ID = #{codeId}
+		ORDER BY DISPLAY_ORDER ASC
+	</select>
+
+	<select id="selectCodeValueDetail" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueVO" resultType="com.dinens.citron.p.admin.code.domain.CodeValueVO">
+		SELECT	/* CodeValueMapper.selectCodeValueDetail */
+				CODE_ID,
+				VALUE,
+				NAME,
+				DISPLAY_ORDER,
+				DESCRIPTION,
+				USE_YN,
+				CREATE_ID,
+				DATE_FORMAT(CREATE_TIME,"%Y-%m-%d %H:%i:%s") AS CREATE_TIME,
+				UPDATE_ID,
+				DATE_FORMAT(UPDATE_TIME,"%Y-%m-%d %H:%i:%s") AS UPDATE_TIME
+		FROM	T_CODE_VALUE A
+		WHERE	CODE_ID = #{codeId}
+		  AND	VALUE = #{value}
+	</select>
+
+	<insert id="insertCodeValue" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueVO">
+		INSERT INTO /* CodeValueMapper.insertCodeValue */ T_CODE_VALUE
+		(
+			CODE_ID,
+			VALUE,
+			NAME,
+			DISPLAY_ORDER,
+			DESCRIPTION,
+			USE_YN,
+			CREATE_ID,
+			CREATE_TIME
+		)
+		VALUES
+		(
+			#{codeId},
+			#{value},
+			#{name},
+			#{displayOrder},
+			#{description},
+			#{useYn},
+			#{createId},
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<update id="updateCodeValue" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueVO">
+		UPDATE /* CodeValueMapper.updateCodeValue */ T_CODE_VALUE
+			SET	NAME = #{name},
+				DISPLAY_ORDER = #{displayOrder},
+				DESCRIPTION = #{description},
+				USE_YN = #{useYn},
+				UPDATE_ID = #{updateId},
+				UPDATE_TIME = CURRENT_TIMESTAMP
+		WHERE	CODE_ID = #{codeId}
+		  AND	VALUE = #{value}
+	</update>
+	
+	<delete id="deleteCodeValue" parameterType="com.dinens.citron.p.admin.code.domain.CodeValueVO">
+		DELETE FROM /* CodeValueMapper.deleteCodeValue */ T_CODE_VALUE
+		WHERE	CODE_ID = #{codeId}
+		<if test='value != null and value != ""'>
+		  AND	VALUE = #{value}
+		</if>
+	</delete>
+
+</mapper>

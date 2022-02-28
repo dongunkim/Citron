@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>CITRON - Error Page</title>
+<style>
+/* error */
+html,textarea { font-family:  "Tahoma", "Lucida Grande", "Lucida Sans Unicode","Dotum", '돋움', sans-serif; font-weight: 400;}
+html,body,
+#error_wrap { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; position: relative;}
+.error { width: 700px; height: 200px; position: absolute; left: 50%; top: 50%; margin: -300px 0 0 -350px;}
+.error_bg { overflow: hidden;}
+.l_logo { float: left; padding-right: 20px; padding-bottom: 50px; width: 170px; height: 115px;}
+.error_txt { position: relative; text-align: left;}
+.error_txt p { margin: 0; color: #4e4e4e;}
+.error_txt .tit { position: absolute; left: 13px; top: -15px; font-size: 75px; font-weight: 700;}
+.error_txt .point { font-size: 21px; font-weight: 500; margin-top: 130px;}
+.error_txt .tt { font-size: 14px; padding-top: 5px;}
+</style>
+</head>
+ <body>
+	<div id="error_wrap">
+		<div class="error">
+			<div class="error_bg">
+				<p class="l_logo"><img src="/images/error_bg.jpg" alt="" /></p>
+				<div class="error_txt">
+					<p class="tit">100</p>
+					<p class="point">Error Status</p>
+					<p class="tt">Error Message</p>
+				</div><!--// error_txt -->
+			</div><!--// error_bg -->
+		</div><!--// error -->		
+	</div><!--// error_wrap -->
+ </body>
+</html>
